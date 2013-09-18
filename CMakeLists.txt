@@ -21,3 +21,21 @@ endif (USE_PEDANTIC)
 
 
 
+add_executable( p2l-rawseeds-experiments-runner
+  src/data_loader.cpp
+  src/runner.cpp
+)
+pods_use_pkg_config_packages( p2l-rawseeds-experiments-runner
+  boost-1.54.0
+  boost-1.54.0-program-options
+  p2l-common
+  p2l-math-core lcmtypes_p2l-math-core
+  p2l-point-process-core 
+  p2l-probability-core lcmtypes_p2l-probability-core
+  p2l-probability-core-graphics 
+  p2l-igmm-point-process  lcmtypes_p2l-igmm-point-process
+  p2l-ruler-point-process
+  p2l-planner-core
+  p2l-point-process-experiment-core
+  )
+pods_install_executables( p2l-rawseeds-experiments-runner )

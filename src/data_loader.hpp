@@ -5,7 +5,7 @@
 #include <math-core/geom.hpp>
 #include <vector>
 #include <stdexcept>
-#include <boost/exception.hpp>
+#include <boost/exception/all.hpp>
 
 namespace rawseeds_experiments {
 
