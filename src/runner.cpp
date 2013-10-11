@@ -156,6 +156,9 @@ int main( int argn, char** argv )
     ( "point-process-parameters-json",
       po::value<std::string>()->default_value(""),
       "The point process parameters as a JSON string")
+    ( "add-empty-regions",
+      po::value<bool>()->default_value(true),
+      "Compute and add emty regions within observed cells")
     ( "initial-window-fraction",
       po::value<double>()->default_value( 0.1 ),
       "The fraction of the world window initially 'seen' by hte planner");
@@ -191,21 +194,27 @@ int main( int argn, char** argv )
   // seed the planner
   initial_window =
     setup_planner_with_initial_observations( planner,
+					     po_vm["add-empty-regions"].as<bool>(),
 					     initial_window,
 					     ground_truth );
 
   // create the meta and trace files
   std::ofstream out_meta( "planner.meta" );
   std::ofstream out_trace( "planner.trace" );
+  std::ofstream out_verbose_trace( "planner.verbose-trace" );
+
+  out_meta << "add_empty_regions: " << po_vm["add-empty-regions"].as<bool>() << std::endl;
   
   // run the planner
   std::vector<marked_grid_cell_t> trace =
     simulate_run_until_all_points_found( planner,
+					 po_vm["add-empty-regions"].as<bool>(),
 					 initial_window,
 					 ground_truth,
 					 out_meta,
 					 out_trace,
-					 std::cout);
+					 std::cout,
+					 out_verbose_trace);
 
   return 0;
 }

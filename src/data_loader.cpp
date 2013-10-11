@@ -37,7 +37,7 @@ namespace rawseeds_experiments {
       BOOST_THROW_EXCEPTION( unknown_rawseeds_world_exception() );
     }
     
-    return aabox( point( 0.0, -40.0 ), point( 160.0, 40.0 ) );
+    return aabox( point( -20.0, -40.0 ), point( 160.0, 40.0 ) );
   }
   
   //============================================================================
