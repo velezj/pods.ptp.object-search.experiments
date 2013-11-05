@@ -129,6 +129,35 @@ create_planner( boost::shared_ptr<mcmc_point_process_t>& planner_process,
   }
 
 
+  if( po_vm["planner"].as<std::string>() == "debug::small_001" ) {
+
+    // create a planner for it
+    grid_planner_parameters_t planner_params;
+    planner_params.burnin_mcmc_iterations = 1;
+    planner_params.update_model_mcmc_iterations = 1;
+    planner_params.grid_cell_size = 1.0;
+    entropy_estimator_parameters_t entropy_params;
+    entropy_params.num_samples = 2;
+    sampler_planner_parameters_t sampler_planner_params;
+    sampler_planner_params.num_samples_of_observations = 1;
+    sampler_planner_params.num_samples_of_point_sets = 2;
+    double prob_thresh = 0.6;
+    boost::shared_ptr<grid_planner_t> planner
+      = boost::shared_ptr<grid_planner_t>
+      (
+       new shortest_path_next_planner ( planner_process,
+					planner_params,
+					entropy_params,
+					sampler_planner_params,
+					prob_thresh)
+       );
+    
+    return planner;
+    
+  }
+
+
+
   throw std::runtime_error( "unknown planner!" );
 }
 
@@ -143,7 +172,7 @@ int main( int argn, char** argv )
     ( "help", "usage and help message")
     ( "world", 
       po::value<std::string>()->default_value( "biccoca_2009_02_27a" ), 
-      "Which RAWSEEDS world to load. Current supported values are ['biccoca_2009_02_27a']")
+      "Which RAWSEEDS world to load. Current supported values are ['biccoca_2009_02_27a', 'small_001']")
     ( "planner",
       po::value<std::string>()->default_value( "shortest_path_next_planner" ),
       "Which planner should we use. Current supported planners are ['shortest_path_next_planner']")
@@ -176,8 +205,10 @@ int main( int argn, char** argv )
   }
 
   // get the wanted world points and window
-  std::vector< nd_point_t > ground_truth = groundtruth_for_world( po_vm["world"].as<std::string>() );
-  nd_aabox_t world_window = window_for_world( po_vm["world"].as<std::string>() );
+  std::vector< nd_point_t > ground_truth = rawseeds_experiments::groundtruth_for_world( po_vm["world"].as<std::string>() );
+  nd_aabox_t world_window = rawseeds_experiments::window_for_world( po_vm["world"].as<std::string>() );
+
+  std::cout << "num points: " << ground_truth.size() << std::endl;
   
   // build up the point process model
   boost::shared_ptr< mcmc_point_process_t > planner_process = create_planner_process( world_window, po_vm );
@@ -199,9 +230,9 @@ int main( int argn, char** argv )
 					     ground_truth );
 
   // create the meta and trace files
-  std::ofstream out_meta( "planner.meta" );
-  std::ofstream out_trace( "planner.trace" );
-  std::ofstream out_verbose_trace( "planner.verbose-trace" );
+  std::ofstream out_meta( "00-planner.meta" );
+  std::ofstream out_trace( "00-planner.trace" );
+  std::ofstream out_verbose_trace( "00-planner.verbose-trace" );
 
   out_meta << "add_empty_regions: " << po_vm["add-empty-regions"].as<bool>() << std::endl;
   
