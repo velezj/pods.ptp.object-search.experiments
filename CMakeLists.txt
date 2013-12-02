@@ -21,6 +21,40 @@ endif (USE_PEDANTIC)
 
 
 
+add_library( p2l-rawseeds-experiments SHARED
+  src/planners.cpp
+  src/models.cpp
+  src/register.cpp
+  src/data_loader.cpp
+)
+pods_use_pkg_config_packages( p2l-rawseeds-experiments
+  boost-1.54.0
+  p2l-common
+  p2l-math-core lcmtypes_p2l-math-core
+  p2l-point-process-core 
+  p2l-probability-core lcmtypes_p2l-probability-core
+  p2l-igmm-point-process  lcmtypes_p2l-igmm-point-process
+  p2l-ruler-point-process
+  p2l-planner-core
+  p2l-point-process-experiment-core
+)
+pods_install_headers(
+  src/models.hpp
+  src/planners.hpp
+  src/register.hpp
+  src/data_loader.hpp
+  DESTINATION
+  p2l-rawseeds-experiments
+)
+pods_install_libraries( p2l-rawseeds-experiments )
+pods_install_pkg_config_file(p2l-rawseeds-experiments
+    CFLAGS
+    LIBS -lp2l-rawseeds-experiments
+    REQUIRES boost-1.54.0 p2l-common p2l-math-core lcmtypes_p2l-math-core p2l-point-process-core p2l-probability-core lcmtypes_p2l-probability-core p2l-igmm-point-process lcmtypes_p2l-igmm-point-process p2l-ruler-point-process p2l-planner-core p2l-point-process-experiment-core
+    VERSION 0.0.1)
+
+
+
 add_executable( p2l-rawseeds-experiments-runner
   src/data_loader.cpp
   src/runner.cpp
@@ -39,3 +73,15 @@ pods_use_pkg_config_packages( p2l-rawseeds-experiments-runner
   p2l-point-process-experiment-core
   )
 pods_install_executables( p2l-rawseeds-experiments-runner )
+
+
+
+add_executable( p2l-rawseeds-experiments-console
+  src/console.cpp
+)
+pods_use_pkg_config_packages( p2l-rawseeds-experiments-console
+  p2l-rawseeds-experiments
+)
+pods_install_executables( p2l-rawseeds-experiments-console )
+
+add_subdirectory( test )
