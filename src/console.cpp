@@ -38,25 +38,40 @@ int main( int argc, char** argv ) {
   bool add_empty_regions;
   double initial_window_fraction;
   std::string experiment_id;
+  size_t num_runs = 1;
   std::cout << "Add Empty Regions [0/1]> ";
   std::cin >> add_empty_regions;
   std::cout << "Initial Window Fraction> ";
   std::cin >> initial_window_fraction;
-  std::cout << "Experiment Id [Empty for timestamp]> ";
+  std::cout << "Experiment Id [. for timestamp]> ";
   std::cin >> experiment_id;
-  if( experiment_id == "" ) {
+  if( experiment_id == "." ) {
     std::ostringstream oss;
     oss << "ex-" << time( NULL );
     experiment_id = oss.str();
     std::cout << "Setting Experiment Id to: " << experiment_id << std::endl;
   }
+  std::cout << "Number of runs> ";
+  std::cin >> num_runs;
+
+  std::string base_experiment_id = experiment_id;
   
-  // run the experiment
-  point_process_experiment_core::run_experiment( world,
-						 model,
-						 planner,
-						 add_empty_regions,
-						 initial_window_fraction,
-						 experiment_id );
-  
+  for( size_t i = 0; i < num_runs; ++i ) {
+
+    // create the runs experiment id if wanted
+    if( num_runs > 1 ) {
+      std::ostringstream oss;
+      oss << base_experiment_id << "-" << i;
+      experiment_id = oss.str();
+    }
+   
+    // run the experiment
+    point_process_experiment_core::run_experiment( world,
+						   model,
+						   planner,
+						   add_empty_regions,
+						   initial_window_fraction,
+						   experiment_id );
+  }
+    
 }

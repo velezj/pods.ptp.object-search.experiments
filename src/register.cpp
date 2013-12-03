@@ -46,6 +46,14 @@ register_world
     register_model
       ( "rawseeds::ruler_2d_small_002",
 	model_f);
+    model_f = rawseeds_experiments::models::ruler_2d_mean_small_002;
+    register_model
+      ( "rawseeds::ruler_2d_mean_small_002",
+	model_f);
+    model_f = rawseeds_experiments::models::ruler_2d_mode_small_002;
+    register_model
+      ( "rawseeds::ruler_2d_mode_small_002",
+	model_f);
     
     // register all planners
     boost::function< boost::shared_ptr<planner_core::grid_planner_t> ( boost::shared_ptr<point_process_core::mcmc_point_process_t>&) > planner_f;
@@ -56,6 +64,14 @@ register_world
     planner_f = rawseeds_experiments::planners::debug_shortest_path_next_planner_001;
     register_planner
       ( "rawseeds::debug::shortest_path_next_planner_001",
+	planner_f);
+    planner_f = rawseeds_experiments::planners::shortest_path_next_planner_001_10grid;
+    register_planner
+      ( "rawseeds::shortest_path_next_planner_001_10grid",
+	planner_f);
+    planner_f = rawseeds_experiments::planners::debug_shortest_path_next_planner_001_10grid;
+    register_planner
+      ( "rawseeds::debug::shortest_path_next_planner_001_10grid",
 	planner_f);
 
   }
