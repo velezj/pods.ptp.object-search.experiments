@@ -31,12 +31,10 @@ namespace rawseeds_experiments {
 
     
     if( world == "small_001" ) {
-      points.push_back( point( 0.25, 0.25 ) );
       points.push_back( point( 2.25, 2.25 ) );
       points.push_back( point( 4.25, 4.25 ) );
       points.push_back( point( 6.25, 6.25 ) );
       points.push_back( point( 8.25, 8.25 ) );
-      points.push_back( point( 0.55, 0.55 ) );
       points.push_back( point( 2.55, 2.55 ) );
       points.push_back( point( 4.55, 4.55 ) );
       points.push_back( point( 6.55, 6.55 ) );
@@ -58,6 +56,21 @@ namespace rawseeds_experiments {
       }
       return points;
     }
+
+    if( world == "random-subset-0.3::biccoca_2009_02_27a" ) {
+      // ok, look up the centroid file SSV and parse it
+      std::ifstream fin( "/home/velezj/projects/gits/p2l-system/build/bin/data/bicocca-2009-02-27a/labeled-signs-1-centroids.ssv" );
+      points = parse_points_from_ssv_stream( fin );
+      fin.close();
+      // randomly shulfffe points and pick first half
+      if( points.size() >= int(10 / 3.0) ) {
+	std::random_shuffle( points.begin(), points.end() );
+	points.erase( points.begin() + int(3.0 * points.size() / 10),
+		      points.end() );
+      }
+      return points;
+    }
+
 
 
     if( world == "random-subset-0.1::biccoca_2009_02_27a" ) {
