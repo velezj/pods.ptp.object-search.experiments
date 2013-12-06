@@ -49,6 +49,15 @@ namespace rawseeds_experiments { namespace planners {
     (boost::shared_ptr<point_process_core::mcmc_point_process_t>& model);
 
     //=====================================================================
+
+    // Descripion:
+    // A coverage planner
+    boost::shared_ptr<planner_core::grid_planner_t>
+    coverage_planner_1grid
+    (boost::shared_ptr<point_process_core::mcmc_point_process_t>& model);
+
+
+    //=====================================================================
     
     // Descripion:
     // A standard shortest_next_path planner

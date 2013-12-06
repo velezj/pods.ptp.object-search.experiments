@@ -37,12 +37,15 @@ int main( int argc, char** argv ) {
   // get settings
   bool add_empty_regions;
   double initial_window_fraction;
+  bool centered_window;
   std::string experiment_id;
   size_t num_runs = 1;
   std::cout << "Add Empty Regions [0/1]> ";
   std::cin >> add_empty_regions;
   std::cout << "Initial Window Fraction> ";
   std::cin >> initial_window_fraction;
+  std::cout << "Window Centered [0/1]> ";
+  std::cin >> centered_window;
   std::cout << "Experiment Id [. for timestamp]> ";
   std::cin >> experiment_id;
   if( experiment_id == "." ) {
@@ -71,7 +74,8 @@ int main( int argc, char** argv ) {
 						   planner,
 						   add_empty_regions,
 						   initial_window_fraction,
-						   experiment_id );
+						   experiment_id,
+						   centered_window );
   }
     
 }
