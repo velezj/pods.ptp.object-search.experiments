@@ -190,7 +190,10 @@ int main( int argn, char** argv )
       "Compute and add emty regions within observed cells")
     ( "initial-window-fraction",
       po::value<double>()->default_value( 0.1 ),
-      "The fraction of the world window initially 'seen' by hte planner");
+      "The fraction of the world window initially 'seen' by hte planner")
+    ( "goal-fraction-found",
+      po::value<double>()->default_value( 1.0 ),
+      "The fraction of the groundtruth point we need to find to finish the run (defaults to 1.0 or *all* points)");
       
 
   // parse the program options
@@ -241,6 +244,7 @@ int main( int argn, char** argv )
     simulate_run_until_all_points_found( planner,
 					 po_vm["add-empty-regions"].as<bool>(),
 					 initial_window,
+					 po_vm["goal-fraction"].as<double>(),
 					 ground_truth,
 					 out_meta,
 					 out_trace,

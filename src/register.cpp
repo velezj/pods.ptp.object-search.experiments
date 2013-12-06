@@ -82,6 +82,18 @@ namespace rawseeds_experiments {
     register_model
       ( "rawseeds::ruler_2d_mode_004",
 	model_f);
+    model_f = rawseeds_experiments::models::ruler_2d_005;
+    register_model
+      ( "rawseeds::ruler_2d_005",
+	model_f);
+    model_f = rawseeds_experiments::models::ruler_2d_mean_005;
+    register_model
+      ( "rawseeds::ruler_2d_mean_005",
+	model_f);
+    model_f = rawseeds_experiments::models::ruler_2d_mode_005;
+    register_model
+      ( "rawseeds::ruler_2d_mode_005",
+	model_f);
 
     
     // register all planners

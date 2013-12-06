@@ -81,6 +81,29 @@ namespace rawseeds_experiments { namespace models {
     boost::shared_ptr<point_process_core::mcmc_point_process_t>
     ruler_2d_mode_004( const math_core::nd_aabox_t& window );
 
+
+    //======================================================================
+
+    // Description:
+    // A ruler-point-process model with weak priors
+    boost::shared_ptr<point_process_core::mcmc_point_process_t>
+    ruler_2d_005( const math_core::nd_aabox_t& window );
+
+    //======================================================================
+
+    // Description:
+    // A ruler-point-process model with weak priors
+    boost::shared_ptr<point_process_core::mcmc_point_process_t>
+    ruler_2d_mean_005( const math_core::nd_aabox_t& window );
+
+    
+    //======================================================================
+
+    // Description:
+    // A ruler-point-process model with weak priors
+    boost::shared_ptr<point_process_core::mcmc_point_process_t>
+    ruler_2d_mode_005( const math_core::nd_aabox_t& window );
+
     
     //======================================================================
     

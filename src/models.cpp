@@ -508,6 +508,165 @@ namespace rawseeds_experiments { namespace models {
       return planner_process;
     }
 
+
+    //=====================================================================
+
+    boost::shared_ptr<point_process_core::mcmc_point_process_t>
+    ruler_2d_005( const math_core::nd_aabox_t& window )
+    {
+      int dim = 2;
+      std::vector<double> two_unit, unit;
+      for( size_t i = 0; i < dim; ++i ) {
+	unit.push_back( 1.0 );
+	two_unit.push_back( 2.0 );
+      }
+      ruler_point_process_model_t model;
+      model.prior_ruler_start_mean = window.start + 0.25 * ( window.end - window.start );
+      model.prior_ruler_direction_mean = window.end;
+      model.alpha = 1;
+      model.precision_distribution.shape = 50;
+      model.precision_distribution.rate = 10;
+      model.period_distribution.p = pow( 0.15 * magnitude(window.end - window.start ) ,2);
+      model.period_distribution.q = 0.15 * magnitude(window.end - window.start ) * 2;
+      model.period_distribution.r = 2;
+      model.period_distribution.s = 2;
+      model.ruler_length_distribution.p = pow( 0.5 * magnitude(window.end - window.start ) , 2);
+      model.ruler_length_distribution.q = 0.5 * magnitude(window.end - window.start ) * 2;
+      model.ruler_length_distribution.r = 2;
+      model.ruler_length_distribution.s = 2;
+      model.ruler_start_mean_distribution.dimension = dim;
+      nd_point_t mp = centroid( window );
+      model.ruler_start_mean_distribution.means.push_back( mp.coordinate[0] );
+      model.ruler_start_mean_distribution.means.push_back( mp.coordinate[1] );
+      model.ruler_start_mean_distribution.covariance = to_dense_mat( Eigen::MatrixXd::Identity(dim,dim) * (1.0*1.0) );
+      model.ruler_start_precision_distribution.shape = 50;
+      model.ruler_start_precision_distribution.rate = 10;
+      model.ruler_direction_mean_distribution.dimension = dim;
+      model.ruler_direction_mean_distribution.means.push_back( window.end.coordinate[0] );
+      model.ruler_direction_mean_distribution.means.push_back( window.end.coordinate[1] );
+      model.ruler_direction_mean_distribution.covariance = to_dense_mat( Eigen::MatrixXd::Identity(dim,dim) * 1.0 );
+      model.ruler_direction_precision_distribution.shape = 500;
+      model.ruler_direction_precision_distribution.rate = 10;
+      std::vector<nd_point_t> init_points;
+      init_points.push_back( window.start );
+      init_points.push_back( window.end );
+      boost::shared_ptr<ruler_point_process_t> process = 
+	boost::shared_ptr<ruler_point_process_t>
+	( new ruler_point_process_t( window,
+				     model,
+				     init_points ) );
+      process->set_liklihood_algorithm( monte_carlo_likelihood_approximation );
+      boost::shared_ptr<mcmc_point_process_t> planner_process
+	= boost::shared_ptr<mcmc_point_process_t>( process );
+      
+      return planner_process;
+    }
+
+        //=====================================================================
+
+    boost::shared_ptr<point_process_core::mcmc_point_process_t>
+    ruler_2d_mean_005( const math_core::nd_aabox_t& window )
+    {
+      int dim = 2;
+      std::vector<double> two_unit, unit;
+      for( size_t i = 0; i < dim; ++i ) {
+	unit.push_back( 1.0 );
+	two_unit.push_back( 2.0 );
+      }
+      ruler_point_process_model_t model;
+      model.prior_ruler_start_mean = window.start + 0.25 * ( window.end - window.start );
+      model.prior_ruler_direction_mean = window.end;
+      model.alpha = 1;
+      model.precision_distribution.shape = 50;
+      model.precision_distribution.rate = 10;
+      model.period_distribution.p = pow( 0.15 * magnitude(window.end - window.start ) ,2);
+      model.period_distribution.q = 0.15 * magnitude(window.end - window.start ) * 2;
+      model.period_distribution.r = 2;
+      model.period_distribution.s = 2;
+      model.ruler_length_distribution.p = pow( 0.5 * magnitude(window.end - window.start ) , 2);
+      model.ruler_length_distribution.q = 0.5 * magnitude(window.end - window.start ) * 2;
+      model.ruler_length_distribution.r = 2;
+      model.ruler_length_distribution.s = 2;
+      model.ruler_start_mean_distribution.dimension = dim;
+      nd_point_t mp = centroid( window );
+      model.ruler_start_mean_distribution.means.push_back( mp.coordinate[0] );
+      model.ruler_start_mean_distribution.means.push_back( mp.coordinate[1] );
+      model.ruler_start_mean_distribution.covariance = to_dense_mat( Eigen::MatrixXd::Identity(dim,dim) * (1.0*1.0) );
+      model.ruler_start_precision_distribution.shape = 50;
+      model.ruler_start_precision_distribution.rate = 10;
+      model.ruler_direction_mean_distribution.dimension = dim;
+      model.ruler_direction_mean_distribution.means.push_back( window.end.coordinate[0] );
+      model.ruler_direction_mean_distribution.means.push_back( window.end.coordinate[1] );
+      model.ruler_direction_mean_distribution.covariance = to_dense_mat( Eigen::MatrixXd::Identity(dim,dim) * 1.0 );
+      model.ruler_direction_precision_distribution.shape = 500;
+      model.ruler_direction_precision_distribution.rate = 10;
+      std::vector<nd_point_t> init_points;
+      init_points.push_back( window.start );
+      init_points.push_back( window.end );
+      boost::shared_ptr<ruler_point_process_t> process = 
+	boost::shared_ptr<ruler_point_process_t>
+	( new ruler_point_process_t( window,
+				     model,
+				     init_points ) );
+      process->set_liklihood_algorithm( mean_likelihood_approximation );
+      boost::shared_ptr<mcmc_point_process_t> planner_process
+	= boost::shared_ptr<mcmc_point_process_t>( process );
+      
+      return planner_process;
+    }
+
+    //=====================================================================
+
+    boost::shared_ptr<point_process_core::mcmc_point_process_t>
+    ruler_2d_mode_005( const math_core::nd_aabox_t& window )
+    {
+      int dim = 2;
+      std::vector<double> two_unit, unit;
+      for( size_t i = 0; i < dim; ++i ) {
+	unit.push_back( 1.0 );
+	two_unit.push_back( 2.0 );
+      }
+      ruler_point_process_model_t model;
+      model.prior_ruler_start_mean = window.start + 0.25 * ( window.end - window.start );
+      model.prior_ruler_direction_mean = window.end;
+      model.alpha = 1;
+      model.precision_distribution.shape = 50;
+      model.precision_distribution.rate = 10;
+      model.period_distribution.p = pow( 0.15 * magnitude(window.end - window.start ) ,2);
+      model.period_distribution.q = 0.15 * magnitude(window.end - window.start ) * 2;
+      model.period_distribution.r = 2;
+      model.period_distribution.s = 2;
+      model.ruler_length_distribution.p = pow( 0.5 * magnitude(window.end - window.start ) , 2);
+      model.ruler_length_distribution.q = 0.5 * magnitude(window.end - window.start ) * 2;
+      model.ruler_length_distribution.r = 2;
+      model.ruler_length_distribution.s = 2;
+      model.ruler_start_mean_distribution.dimension = dim;
+      nd_point_t mp = centroid( window );
+      model.ruler_start_mean_distribution.means.push_back( mp.coordinate[0] );
+      model.ruler_start_mean_distribution.means.push_back( mp.coordinate[1] );
+      model.ruler_start_mean_distribution.covariance = to_dense_mat( Eigen::MatrixXd::Identity(dim,dim) * (1.0*1.0) );
+      model.ruler_start_precision_distribution.shape = 50;
+      model.ruler_start_precision_distribution.rate = 10;
+      model.ruler_direction_mean_distribution.dimension = dim;
+      model.ruler_direction_mean_distribution.means.push_back( window.end.coordinate[0] );
+      model.ruler_direction_mean_distribution.means.push_back( window.end.coordinate[1] );
+      model.ruler_direction_mean_distribution.covariance = to_dense_mat( Eigen::MatrixXd::Identity(dim,dim) * 1.0 );
+      model.ruler_direction_precision_distribution.shape = 500;
+      model.ruler_direction_precision_distribution.rate = 10;
+      std::vector<nd_point_t> init_points;
+      init_points.push_back( window.start );
+      init_points.push_back( window.end );
+      boost::shared_ptr<ruler_point_process_t> process = 
+	boost::shared_ptr<ruler_point_process_t>
+	( new ruler_point_process_t( window,
+				     model,
+				     init_points ) );
+      process->set_liklihood_algorithm( mode_likelihood_approximation );
+      boost::shared_ptr<mcmc_point_process_t> planner_process
+	= boost::shared_ptr<mcmc_point_process_t>( process );
+      
+      return planner_process;
+    }
     
     //=====================================================================
     

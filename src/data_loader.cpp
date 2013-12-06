@@ -1,8 +1,10 @@
 
 #include "data_loader.hpp"
 #include <point-process-experiment-core/data_io.hpp>
+#include <math-core/io.hpp>
 #include <fstream>
 #include <algorithm>
+#include <iostream>
 
 
 using namespace math_core;
@@ -78,6 +80,24 @@ namespace rawseeds_experiments {
       std::ifstream fin( "/home/velezj/projects/gits/p2l-system/build/bin/data/bicocca-2009-02-27a/labeled-signs-1-centroids.ssv" );
       points = parse_points_from_ssv_stream( fin );
       fin.close();
+
+      // simply find max start and min end points for the cell regions
+      nd_point_t max_point = points[0];
+      nd_point_t min_point = points[0];
+      for( size_t i = 1; i < points.size(); ++i ) {
+	nd_point_t s = points[i];
+	
+	// update max/min points
+	if( point_lexicographical_compare( max_point, s ) ) {
+	  max_point = s;
+	}
+	if( point_lexicographical_compare( s, min_point ) ) {
+	  min_point = s;
+	}
+      }
+      std::cout << "  Full *actual* rawseeds window: " << aabox( min_point, max_point ) << std::endl;
+      
+      
       // randomly shulfffe points and pick first half
       if( points.size() >= 10 ) {
 	std::random_shuffle( points.begin(), points.end() );
