@@ -1,9 +1,11 @@
 
 #include "models.hpp"
 #include <ruler-point-process/ruler_point_process.hpp>
+#include <igmm-point-process/igmm_point_process.hpp>
 
 using namespace point_process_core;
 using namespace ruler_point_process;
+using namespace igmm_point_process;
 using namespace math_core;
 
 namespace rawseeds_experiments { namespace models {
@@ -670,6 +672,34 @@ namespace rawseeds_experiments { namespace models {
     
     //=====================================================================
     
+    boost::shared_ptr<point_process_core::mcmc_point_process_t>
+    igmm_2d_weak_001( const math_core::nd_aabox_t& window )
+    {
+      int dim = 2;
+      igmm_point_process_model_t model;
+      model.alpha = 1;
+      model.mean_distribution.dimension = dim;
+      model.mean_distribution.means = ( window.start + 0.25 * ( window.end - window.start ) ).coordinates;
+      model.mean_distribution.covariance = to_dense_mat( Eigen::MatrixXd::Identity(dim,dim) * 1.0 );
+      model.precision_distribution.shape = 2;
+      model.precision_distribution.rate = 0.5;
+      model.num_points_per_gaussian_distribution.shape = 2;
+      model.num_points_per_gaussian_distribution.rate = 0.5;
+
+      std::vector<nd_point_t> init_points;
+      init_points.push_back( window.start );
+      init_points.push_back( window.end );
+      boost::shared_ptr<igmm_point_process_t> process = 
+	boost::shared_ptr<igmm_point_process_t>
+	( new igmm_point_process_t( window,
+				    model,
+				    init_points ) );
+      boost::shared_ptr<mcmc_point_process_t> planner_process
+	= boost::shared_ptr<mcmc_point_process_t>( process );
+      return planner_process;
+    }
+
+    //=====================================================================
 
   }
 }

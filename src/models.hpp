@@ -107,6 +107,13 @@ namespace rawseeds_experiments { namespace models {
     
     //======================================================================
     
+    // Description:
+    // An igmm-point-process model with weak priors
+    boost::shared_ptr<point_process_core::mcmc_point_process_t>
+    igmm_2d_weak_001( const math_core::nd_aabox_t& window );
+
+    //======================================================================
+    
     
   }
 }

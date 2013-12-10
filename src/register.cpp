@@ -94,6 +94,11 @@ namespace rawseeds_experiments {
     register_model
       ( "rawseeds::ruler_2d_mode_005",
 	model_f);
+    model_f = rawseeds_experiments::models::igmm_2d_weak_001;
+    register_model
+      ( "rawseeds::igmm_2d_weak_001",
+	model_f);
+
 
     
     // register all planners
