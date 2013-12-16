@@ -679,7 +679,7 @@ namespace rawseeds_experiments { namespace models {
       igmm_point_process_model_t model;
       model.alpha = 1;
       model.mean_distribution.dimension = dim;
-      model.mean_distribution.means = ( window.start + 0.25 * ( window.end - window.start ) ).coordinates;
+      model.mean_distribution.means = ( window.start + 0.25 * ( window.end - window.start ) ).coordinate;
       model.mean_distribution.covariance = to_dense_mat( Eigen::MatrixXd::Identity(dim,dim) * 1.0 );
       model.precision_distribution.shape = 2;
       model.precision_distribution.rate = 0.5;
