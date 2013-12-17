@@ -73,6 +73,14 @@ namespace rawseeds_experiments { namespace planners {
     shortest_path_next_planner_002_10grid
     (boost::shared_ptr<point_process_core::mcmc_point_process_t>& model);
 
+    //=====================================================================
+    
+    // Descripion:
+    // A standard shortest_next_path planner
+    boost::shared_ptr<planner_core::grid_planner_t>
+    shortest_path_next_planner_003_10grid
+    (boost::shared_ptr<point_process_core::mcmc_point_process_t>& model);
+
 
 
   }

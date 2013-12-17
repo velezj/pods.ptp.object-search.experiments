@@ -98,6 +98,10 @@ namespace rawseeds_experiments {
     register_model
       ( "rawseeds::igmm_2d_weak_001",
 	model_f);
+    model_f = rawseeds_experiments::models::ruler_2d_mean_006;
+    register_model
+      ( "rawseeds::ruler_2d_mean_006",
+	model_f);
 
 
     
@@ -135,6 +139,11 @@ namespace rawseeds_experiments {
     register_planner
       ( "rawseeds::shortest_path_next_planner_002_10grid",
 	planner_f);
+    planner_f = rawseeds_experiments::planners::shortest_path_next_planner_003_10grid;
+    register_planner
+      ( "rawseeds::shortest_path_next_planner_003_10grid",
+	planner_f);
+
   }
 
   //=========================================================================

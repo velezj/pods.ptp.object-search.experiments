@@ -209,6 +209,7 @@ namespace rawseeds_experiments { namespace planners {
     
       return planner;
     }
+
     //=====================================================================
 
     boost::shared_ptr<planner_core::grid_planner_t>
@@ -224,6 +225,37 @@ namespace rawseeds_experiments { namespace planners {
       sampler_planner_parameters_t sampler_planner_params;
       sampler_planner_params.num_samples_of_observations = 10;
       sampler_planner_params.num_samples_of_point_sets = 20;
+      sampler_planner_params.num_skip_between_point_set_samples = 1;
+      double prob_thresh = 0.6;
+      boost::shared_ptr<grid_planner_t> planner
+	= boost::shared_ptr<grid_planner_t>
+	(
+	 new shortest_path_next_planner ( model,
+					  planner_params,
+					  entropy_params,
+					  sampler_planner_params,
+					  prob_thresh)
+	 );
+    
+      return planner;
+    }
+
+
+    //=====================================================================
+
+    boost::shared_ptr<planner_core::grid_planner_t>
+    shortest_path_next_planner_003_10grid
+    (boost::shared_ptr<point_process_core::mcmc_point_process_t>& model)
+    {
+      grid_planner_parameters_t planner_params;
+      planner_params.burnin_mcmc_iterations = 100;
+      planner_params.update_model_mcmc_iterations = 30;
+      planner_params.grid_cell_size = 10.0;
+      entropy_estimator_parameters_t entropy_params;
+      entropy_params.num_samples = 10;
+      sampler_planner_parameters_t sampler_planner_params;
+      sampler_planner_params.num_samples_of_observations = 10;
+      sampler_planner_params.num_samples_of_point_sets = 2;
       sampler_planner_params.num_skip_between_point_set_samples = 1;
       double prob_thresh = 0.6;
       boost::shared_ptr<grid_planner_t> planner
