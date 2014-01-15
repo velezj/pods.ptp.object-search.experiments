@@ -30,7 +30,7 @@ int main( int argc, char** argv )
   for( auto model_id : get_registered_models() ) {
 
     // get hte mode to test
-    boost::shared_ptr<mcmc_point_process_t> model = get_model_by_id( model_id, window );
+    boost::shared_ptr<mcmc_point_process_t> model = get_model_by_id( model_id, window,groundtruth );
 
     // ope na new file for the trace of distances
     std::ostringstream oss;

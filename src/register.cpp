@@ -41,7 +41,7 @@ namespace rawseeds_experiments {
     
 
     // register all models
-    boost::function< boost::shared_ptr<point_process_core::mcmc_point_process_t> (const math_core::nd_aabox_t&)> model_f;
+    boost::function< boost::shared_ptr<point_process_core::mcmc_point_process_t> (const math_core::nd_aabox_t&,const std::vector<math_core::nd_point_t>& gt )> model_f;
     model_f = rawseeds_experiments::models::ruler_2d_small_001;
     register_model
       ( "rawseeds::ruler_2d_small_001",
@@ -101,6 +101,14 @@ namespace rawseeds_experiments {
     model_f = rawseeds_experiments::models::ruler_2d_mean_006;
     register_model
       ( "rawseeds::ruler_2d_mean_006",
+	model_f);
+    model_f = rawseeds_experiments::models::ruler_2d_mean_007;
+    register_model
+      ( "rawseeds::ruler_2d_mean_007",
+	model_f);
+    model_f = rawseeds_experiments::models::ruler_2d_mean_008;
+    register_model
+      ( "rawseeds::ruler_2d_mean_008",
 	model_f);
 
 
