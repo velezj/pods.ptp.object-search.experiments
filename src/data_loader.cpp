@@ -95,7 +95,7 @@ namespace rawseeds_experiments {
 	  min_point = s;
 	}
       }
-      std::cout << "  Full *actual* rawseeds window: " << aabox( min_point, max_point ) << std::endl;
+      //std::cout << "  Full *actual* rawseeds window: " << aabox( min_point, max_point ) << std::endl;
       
       
       // randomly shulfffe points and pick first half
