@@ -5,6 +5,7 @@
 #include <iostream>
 #include <sstream>
 #include <ctime>
+#include <boost/exception/diagnostic_information.hpp>
 
 
 int main( int argc, char** argv ) {
@@ -62,24 +63,30 @@ int main( int argc, char** argv ) {
 
   std::string base_experiment_id = experiment_id;
   
-  for( size_t i = 0; i < num_runs; ++i ) {
-
-    // create the runs experiment id if wanted
-    if( num_runs > 1 ) {
-      std::ostringstream oss;
-      oss << base_experiment_id << "-" << i;
-      experiment_id = oss.str();
+  try {
+    
+    for( size_t i = 0; i < num_runs; ++i ) {
+      
+      // create the runs experiment id if wanted
+      if( num_runs > 1 ) {
+	std::ostringstream oss;
+	oss << base_experiment_id << "-" << i;
+	experiment_id = oss.str();
+      }
+      
+      // run the experiment
+      point_process_experiment_core::run_experiment( world,
+						     model,
+						     planner,
+						     add_empty_regions,
+						     initial_window_fraction,
+						     centered_window,
+						     fraction,
+						     experiment_id);
     }
-   
-    // run the experiment
-    point_process_experiment_core::run_experiment( world,
-						   model,
-						   planner,
-						   add_empty_regions,
-						   initial_window_fraction,
-						   centered_window,
-						   fraction,
-						   experiment_id);
+  } catch ( ... ) {
+    std::cout << "EXCEPTION: " << std::endl;
+    std::cout << boost::current_exception_diagnostic_information();
   }
     
 }
