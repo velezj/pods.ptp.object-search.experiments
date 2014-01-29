@@ -3,6 +3,7 @@
 #include <point-process-experiment-core/experiment_utils.hpp>
 #include <point-process-experiment-core/experiment_runner.hpp>
 #include <probability-core/distribution_utils.hpp>
+#include <math-core/io.hpp>
 #include <iostream>
 #include <fstream>
 #include <sstream>
