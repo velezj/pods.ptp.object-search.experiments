@@ -24,7 +24,8 @@ int main( int argc, char** argv )
 
 
   // get the world to test
-  std::string data_id = "rawseeds::small_001";
+  //std::string data_id = "rawseeds::small_001";
+  std::string data_id = "rawseeds::biccoca_2009_02_27a";
   std::vector<nd_point_t> groundtruth = groundtruth_for_world( data_id );
   nd_aabox_t window = window_for_world( data_id );
 
@@ -35,7 +36,7 @@ int main( int argc, char** argv )
     "rawseeds::igmm_2d_weak_001",
       // "rawseeds::ruler_2d_mean_006",
       // "rawseeds::ruler_2d_mean_007",
-      // "rawseeds::ruler_2d_mean_008",
+      "rawseeds::ruler_2d_mean_008",
       };
   
   // test all known models
@@ -55,10 +56,10 @@ int main( int argc, char** argv )
     size_t num_neg_obs = 0;
     size_t possible_neg_obs = 0;
     for( auto cell : grid.all_cells() ) {
-      if( *grid(cell) &&
+      if( grid(cell) &&
 	  *grid(cell) == true ) {
       } else {
-	if( flip_coin( 0.1 ) ) {
+	if( flip_coin( 0.5 ) ) {
 	  num_neg_obs++;
 	  model->add_negative_observation( grid.region( cell ) );
 	}
@@ -66,19 +67,23 @@ int main( int argc, char** argv )
       }
     }
     std::cout << "num negative observations: " << num_neg_obs << " / " << possible_neg_obs << std::endl;
-    model->mcmc( 10 );
+    //model->mcmc( 10 );
+
+    // compute the bins to each be a certain meters across
+    double meters_per_bin = 1.0;
+    size_t bins_for_intensity = (int)( ( window.end.coordinate[0] - window.start.coordinate[1] ) / meters_per_bin );
 
     // create the name of the intensity image
     std::ostringstream oss;
-    oss << "intensity-" << model_id << ".png";
+    oss << "intensity-" << model_id << ".bmp";
     std::cout << "  ... creating intensity estimate  ..." << std::endl;
     histogram_t<double> intensity_estimate = model->intensity_estimate( window,
-									10,
-									10,
+									bins_for_intensity,
+									100,
 									1,
 									true);
     
-    save_png( oss.str(), intensity_estimate );
+    save_bmp( oss.str(), intensity_estimate );
     std::cout << "created intensity estimate: " << oss.str() << std::endl;
 
   }
