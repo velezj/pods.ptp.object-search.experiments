@@ -17,6 +17,30 @@ using namespace point_process_core;
 using namespace probability_core;
 
 
+void save_ssv( const std::string& filename,
+	       const marked_grid_t<double>& g )
+{
+
+  std::ofstream fout( filename.c_str() );
+  std::vector<marked_grid_cell_t> cells = g.all_cells_ordered();
+  for( marked_grid_cell_t cell : cells ) {
+    nd_aabox_t region = g.region( cell );
+    nd_point_t center = centroid( region );
+    double value = 0;
+    if( g( cell ) ) {
+      value = *g(cell);
+    }
+    fout << cell.coordinate[0] << " "
+	 << cell.coordinate[1] << " "
+	 << center.coordinate[0] << " "
+	 << center.coordinate[1] << " "
+	 << length(region,0) << " "
+	 << length(region,1) << " "
+	 << value << std::endl;
+  }
+
+}
+
 int main( int argc, char** argv )
 {
   
@@ -55,11 +79,12 @@ int main( int argc, char** argv )
     model->add_observations( groundtruth );
     size_t num_neg_obs = 0;
     size_t possible_neg_obs = 0;
+    double neg_p = 1.0;
     for( auto cell : grid.all_cells() ) {
       if( grid(cell) &&
 	  *grid(cell) == true ) {
       } else {
-	if( flip_coin( 0.5 ) ) {
+	if( flip_coin( neg_p ) ) {
 	  num_neg_obs++;
 	  model->add_negative_observation( grid.region( cell ) );
 	}
@@ -70,20 +95,24 @@ int main( int argc, char** argv )
     //model->mcmc( 10 );
 
     // compute the bins to each be a certain meters across
-    double meters_per_bin = 1.0;
+    double meters_per_bin = 5.0;
     size_t bins_for_intensity = (int)( ( window.end.coordinate[0] - window.start.coordinate[1] ) / meters_per_bin );
 
     // create the name of the intensity image
     std::ostringstream oss;
-    oss << "intensity-" << model_id << ".bmp";
+    oss << "intensity-2-" << model_id << ".bmp";
     std::cout << "  ... creating intensity estimate  ..." << std::endl;
+    size_t intensity_samples = 10;
+    size_t skip_samples = 10;
     histogram_t<double> intensity_estimate = model->intensity_estimate( window,
 									bins_for_intensity,
-									100,
-									1,
+									intensity_samples,
+									skip_samples,
 									true);
     
     save_bmp( oss.str(), intensity_estimate );
+    oss << ".ssv";
+    save_ssv( oss.str(), intensity_estimate );
     std::cout << "created intensity estimate: " << oss.str() << std::endl;
 
   }

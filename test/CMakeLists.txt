@@ -12,5 +12,6 @@ add_executable( p2l-rawseeds-experiments-test-ruler-intensity
 )
 pods_use_pkg_config_packages( p2l-rawseeds-experiments-test-ruler-intensity
   p2l-rawseeds-experiments
+  gperftools-2.1
 )
 pods_install_executables( p2l-rawseeds-experiments-test-ruler-intensity )
