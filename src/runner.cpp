@@ -96,6 +96,10 @@ int main( int argn, char** argv )
   fraction = po_vm["goal-fraction-found"].as<double>();
   experiment_id = po_vm["experiment-id"].as<std::string>();
 
+  std::ostringstream oss;
+  oss << experiment_id << "-" << time(NULL);
+  std::string experiment_id_with_nonce = oss.str();
+
   std::vector<point_process_core::marked_grid_cell_t> trace;
   double seconds_taken = std::numeric_limits<double>::quiet_NaN();
   try {
@@ -110,7 +114,7 @@ int main( int argn, char** argv )
 						     initial_window_fraction,
 						     centered_window,
 						     fraction,
-						     experiment_id);
+						     experiment_id_with_nonce);
     clock_t end_clock = clock();
     seconds_taken = ( (double)( end_clock - start_clock ) / CLOCKS_PER_SEC );
 
@@ -143,6 +147,7 @@ int main( int argn, char** argv )
     result.put( "result.parameters.centered_window", centered_window );
     result.put( "result.parameters.goal_fraction_to_find", fraction );
     result.put( "result.parameters.experiment_id", experiment_id );
+    result.put( "result.parameters.experiment_id_with_nonce", experiment_id_with_nonce );
 
     // add the trace for the experiment
     for( size_t i = 0; i < trace.size(); ++i ) {
