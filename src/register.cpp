@@ -151,6 +151,22 @@ namespace rawseeds_experiments {
     register_planner
       ( "rawseeds::shortest_path_next_planner_003_10grid",
 	planner_f);
+    planner_f = rawseeds_experiments::planners::one_action_entropy_reduction_planner_001_1grid;
+    register_planner
+      ( "rawseeds::one_action_entropy_reduction_planner_001_1grid",
+	planner_f);
+    planner_f = rawseeds_experiments::planners::one_action_entropy_reduction_planner_001_10grid;
+    register_planner
+      ( "rawseeds::one_action_entropy_reduction_planner_001_10grid",
+	planner_f);
+    planner_f = rawseeds_experiments::planners::one_action_entropy_reduction_planner_002_1grid;
+    register_planner
+      ( "rawseeds::one_action_entropy_reduction_planner_002_1grid",
+	planner_f);
+    planner_f = rawseeds_experiments::planners::one_action_entropy_reduction_planner_002_10grid;
+    register_planner
+      ( "rawseeds::one_action_entropy_reduction_planner_002_10grid",
+	planner_f);
 
   }
 

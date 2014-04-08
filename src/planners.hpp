@@ -81,6 +81,40 @@ namespace rawseeds_experiments { namespace planners {
     shortest_path_next_planner_003_10grid
     (boost::shared_ptr<point_process_core::mcmc_point_process_t>& model);
 
+    //=====================================================================
+    
+    // Descripion:
+    // A standard one_action_entropy_reduction planner
+    boost::shared_ptr<planner_core::grid_planner_t>
+    one_action_entropy_reduction_planner_001_1grid
+    (boost::shared_ptr<point_process_core::mcmc_point_process_t>& model);
+
+
+    //=====================================================================
+    
+    // Descripion:
+    // A standard one_action_entropy_reduction planner
+    boost::shared_ptr<planner_core::grid_planner_t>
+    one_action_entropy_reduction_planner_001_10grid
+    (boost::shared_ptr<point_process_core::mcmc_point_process_t>& model);
+
+    //=====================================================================
+    
+    // Descripion:
+    // A standard one_action_entropy_reduction planner
+    boost::shared_ptr<planner_core::grid_planner_t>
+    one_action_entropy_reduction_planner_002_1grid
+    (boost::shared_ptr<point_process_core::mcmc_point_process_t>& model);
+
+
+    //=====================================================================
+    
+    // Descripion:
+    // A standard one_action_entropy_reduction planner
+    boost::shared_ptr<planner_core::grid_planner_t>
+    one_action_entropy_reduction_planner_002_10grid
+    (boost::shared_ptr<point_process_core::mcmc_point_process_t>& model);
+
 
 
   }

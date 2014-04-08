@@ -1,200 +1,60 @@
 
-#include "data_loader.hpp"
-#include <ruler-point-process/ruler_point_process.hpp>
-#include <planner-core/shortest_path_next_planner.hpp>
+#include <p2l-rawseeds-experiments/register.hpp>
 #include <point-process-experiment-core/experiment_utils.hpp>
+#include <point-process-experiment-core/experiment_runner.hpp>
 #include <boost/program_options.hpp>
 #include <iostream>
-#include <boost/shared_ptr.hpp>
 #include <fstream>
+#include <sstream>
+#include <ctime>
+#include <boost/exception/diagnostic_information.hpp>
+#include <erf-couchdb/couchdb.hpp>
+#include <git-version-script/git_version.hpp>
 
 
-using namespace math_core;
-using namespace point_process_experiment_core;
-using namespace planner_core;
-using namespace point_process_core;
-using namespace rawseeds_experiments;
-using namespace ruler_point_process;
+
 namespace po = boost::program_options;
-
-
-boost::shared_ptr<mcmc_point_process_t>
-create_planner_process(  const nd_aabox_t& world_window ,
-			 po::variables_map& po_vm)
-{
-  // Really, we only look at the wanted process and them use
-  // some defaults here
-  if( po_vm["point-process"].as<std::string>() == "ruler_point_process" ) {
-    int dim = 2;
-    ruler_point_process_model_t model;
-    model.prior_ruler_start_mean = zero_point( dim );
-    model.prior_ruler_direction_mean = zero_point( dim );
-    model.alpha = 1;
-    model.precision_distribution.shape = 500000;
-    model.precision_distribution.rate = 1000;
-    model.period_distribution.p = pow(2.15,40);
-    model.period_distribution.q = 2.15*40;
-    model.period_distribution.r = 40;
-    model.period_distribution.s = 40;
-    model.ruler_length_distribution.p = pow(10,40);
-    model.ruler_length_distribution.q = 10 * 40;
-    model.ruler_length_distribution.r = 40;
-    model.ruler_length_distribution.s = 40;
-    model.ruler_start_mean_distribution.dimension = dim;
-    model.ruler_start_mean_distribution.means.push_back( 0.4 );
-    model.ruler_start_mean_distribution.means.push_back( 0.4 );
-    model.ruler_start_mean_distribution.covariance = to_dense_mat( Eigen::MatrixXd::Identity(dim,dim) * (0.4*0.4) );
-    model.ruler_start_precision_distribution.shape = 5000;
-    model.ruler_start_precision_distribution.rate = 100;
-    model.ruler_direction_mean_distribution.dimension = dim;
-    model.ruler_direction_mean_distribution.means.push_back( 10 );
-    model.ruler_direction_mean_distribution.means.push_back( 10 );
-    model.ruler_direction_mean_distribution.covariance = to_dense_mat( Eigen::MatrixXd::Identity(dim,dim) * 1 );
-    model.ruler_direction_precision_distribution.shape = 5000;
-    model.ruler_direction_precision_distribution.rate = 100;
-    std::vector<nd_point_t> init_points;
-    init_points.push_back( point( 0.0, 0.0 ) );
-    init_points.push_back( point( 1.0, 1.0 ) );
-    boost::shared_ptr<ruler_point_process_t> process = 
-      boost::shared_ptr<ruler_point_process_t>
-      ( new ruler_point_process_t( world_window,
-				   model,
-				   init_points ) );
-    boost::shared_ptr<mcmc_point_process_t> planner_process
-      = boost::shared_ptr<mcmc_point_process_t>( process );
-    
-    return planner_process;
-  }
-  
-  throw std::runtime_error("unknown planner process!" );
-}
-
-
-boost::shared_ptr<grid_planner_t>
-create_planner( boost::shared_ptr<mcmc_point_process_t>& planner_process,
-		po::variables_map& po_vm )
-{
-  if( po_vm["planner"].as<std::string>() == "shortest_path_next_planner" ) {
-
-    // create a planner for it
-    grid_planner_parameters_t planner_params;
-    planner_params.burnin_mcmc_iterations = 10;
-    planner_params.update_model_mcmc_iterations = 10;
-    planner_params.grid_cell_size = 10.0;
-    entropy_estimator_parameters_t entropy_params;
-    entropy_params.num_samples = 10;
-    sampler_planner_parameters_t sampler_planner_params;
-    sampler_planner_params.num_samples_of_observations = 10;
-    sampler_planner_params.num_samples_of_point_sets = 200;
-    double prob_thresh = 0.6;
-    boost::shared_ptr<grid_planner_t> planner
-      = boost::shared_ptr<grid_planner_t>
-      (
-       new shortest_path_next_planner ( planner_process,
-					planner_params,
-					entropy_params,
-					sampler_planner_params,
-					prob_thresh)
-       );
-    
-    return planner;
-    
-  }
-
-  if( po_vm["planner"].as<std::string>() == "debug::shortest_path_next_planner" ) {
-
-    // create a planner for it
-    grid_planner_parameters_t planner_params;
-    planner_params.burnin_mcmc_iterations = 1;
-    planner_params.update_model_mcmc_iterations = 1;
-    planner_params.grid_cell_size = 10.0;
-    entropy_estimator_parameters_t entropy_params;
-    entropy_params.num_samples = 2;
-    sampler_planner_parameters_t sampler_planner_params;
-    sampler_planner_params.num_samples_of_observations = 1;
-    sampler_planner_params.num_samples_of_point_sets = 2;
-    double prob_thresh = 0.6;
-    boost::shared_ptr<grid_planner_t> planner
-      = boost::shared_ptr<grid_planner_t>
-      (
-       new shortest_path_next_planner ( planner_process,
-					planner_params,
-					entropy_params,
-					sampler_planner_params,
-					prob_thresh)
-       );
-    
-    return planner;
-    
-  }
-
-
-  if( po_vm["planner"].as<std::string>() == "debug::small_001" ) {
-
-    // create a planner for it
-    grid_planner_parameters_t planner_params;
-    planner_params.burnin_mcmc_iterations = 1;
-    planner_params.update_model_mcmc_iterations = 1;
-    planner_params.grid_cell_size = 1.0;
-    entropy_estimator_parameters_t entropy_params;
-    entropy_params.num_samples = 2;
-    sampler_planner_parameters_t sampler_planner_params;
-    sampler_planner_params.num_samples_of_observations = 1;
-    sampler_planner_params.num_samples_of_point_sets = 2;
-    double prob_thresh = 0.6;
-    boost::shared_ptr<grid_planner_t> planner
-      = boost::shared_ptr<grid_planner_t>
-      (
-       new shortest_path_next_planner ( planner_process,
-					planner_params,
-					entropy_params,
-					sampler_planner_params,
-					prob_thresh)
-       );
-    
-    return planner;
-    
-  }
-
-
-
-  throw std::runtime_error( "unknown planner!" );
-}
+using namespace boost::property_tree;
 
 
 int main( int argn, char** argv )
 {
 
+  rawseeds_experiments::rawseeds_registration_type::register_experiments();
+
+
   // setup the program options
-  nd_aabox_t undef_window;
   po::options_description po_desc( "RAWSEEDS Experiment Runner Options" );
   po_desc.add_options()
     ( "help", "usage and help message")
     ( "world", 
-      po::value<std::string>()->default_value( "biccoca_2009_02_27a" ), 
-      "Which RAWSEEDS world to load. Current supported values are ['biccoca_2009_02_27a', 'small_001']")
+      po::value<std::string>(), 
+      "Which RAWSEEDS world to load.")
     ( "planner",
-      po::value<std::string>()->default_value( "shortest_path_next_planner" ),
-      "Which planner should we use. Current supported planners are ['shortest_path_next_planner']")
-    ( "planner-parameters-json",
-      po::value<std::string>()->default_value( "" ),
-      "The parameters for the planner as a JSON string")
-    ( "point-process",
-      po::value<std::string>()->default_value( "ruler_point_process" ),
-      "Which point process to use for modeling and exploration. Current supported point processes are: ['ruler_point_process', 'igmm', 'poisson' ]" )
-    ( "point-process-parameters-json",
-      po::value<std::string>()->default_value(""),
-      "The point process parameters as a JSON string")
+      po::value<std::string>(),
+      "Which planner should we use.")
+    ( "model",
+      po::value<std::string>(),
+      "Which point process to use for modeling and exploration." )
     ( "add-empty-regions",
-      po::value<bool>()->default_value(true),
+      po::value<bool>(),
       "Compute and add emty regions within observed cells")
+    ( "centered-window",
+      po::value<bool>(),
+      "Is the initial window centered?")
     ( "initial-window-fraction",
-      po::value<double>()->default_value( 0.1 ),
-      "The fraction of the world window initially 'seen' by hte planner")
+      po::value<double>(),
+      "The fraction of the world window initially 'seen' by the planner")
     ( "goal-fraction-found",
-      po::value<double>()->default_value( 1.0 ),
-      "The fraction of the groundtruth point we need to find to finish the run (defaults to 1.0 or *all* points)");
-      
+      po::value<double>(),
+      "The fraction of the groundtruth point we need to find to finish the run")
+    ( "experiment-id",
+      po::value<std::string>(),
+      "The experiment id")
+    ( "results-database-url",
+      po::value<std::string>()->default_value("http://localhost:5984/rawseeds-experiment-results/"),
+      "The CouchDB url to use as the results database");
+  
 
   // parse the program options
   po::variables_map po_vm;
@@ -204,52 +64,106 @@ int main( int argn, char** argv )
   // show usage if wanted
   if( po_vm.count( "help" )) {
     std::cout << po_desc << std::endl;
+    std::cout << "Worlds: " << std::endl;
+    for( auto item : point_process_experiment_core::get_registered_worlds() ) {
+      std::cout << "    " << item << std::endl;
+    }
+    std::cout << "Models: " << std::endl;
+    for( auto item : point_process_experiment_core::get_registered_models() ) {
+      std::cout << "    " << item << std::endl;
+    }
+    std::cout << "Planners: " << std::endl;
+    for( auto item : point_process_experiment_core::get_registered_planners() ) {
+      std::cout << "    " << item << std::endl;
+    }
     return 1;
   }
 
-  // get the wanted world points and window
-  std::vector< nd_point_t > ground_truth = rawseeds_experiments::groundtruth_for_world( po_vm["world"].as<std::string>() );
-  nd_aabox_t world_window = rawseeds_experiments::window_for_world( po_vm["world"].as<std::string>() );
 
-  std::cout << "num points: " << ground_truth.size() << std::endl;
+  // get the settings from the options
+  std::string world, model, planner;
+  bool add_empty_regions;
+  double initial_window_fraction;
+  bool centered_window;
+  double fraction;
+  std::string experiment_id;
+  world = po_vm["world"].as<std::string>();
+  model = po_vm["model"].as<std::string>();
+  planner = po_vm["planner"].as<std::string>();
+  add_empty_regions = po_vm["add-empty-regions"].as<bool>();
+  initial_window_fraction = po_vm["initial-window-fraction"].as<double>();
+  centered_window = po_vm["centered-window"].as<bool>();
+  fraction = po_vm["goal-fraction-found"].as<double>();
+  experiment_id = po_vm["experiment-id"].as<std::string>();
+
+  std::vector<point_process_core::marked_grid_cell_t> trace;
+  double seconds_taken = std::numeric_limits<double>::quiet_NaN();
+  try {
+    
+    // run the experiment
+    clock_t start_clock = clock();
+    trace = 
+      point_process_experiment_core::run_experiment( world,
+						     model,
+						     planner,
+						     add_empty_regions,
+						     initial_window_fraction,
+						     centered_window,
+						     fraction,
+						     experiment_id);
+    clock_t end_clock = clock();
+    seconds_taken = ( (double)( end_clock - start_clock ) / CLOCKS_PER_SEC );
+
+  } catch ( ... ) {
+    std::cout << "EXCEPTION running experiment: " << std::endl;
+    std::cout << boost::current_exception_diagnostic_information();
+    return -1;
+  }
+
+
+  try {
+
+    // store results in couchdb
+    couchdb::Couchdb couch( boost::network::uri::uri(po_vm["results-database-url"].as<std::string>()) );
+    
+    // create a document for the result
+    ptree result;
+    
+    // add the code git version
+    result.put_child
+      ( "code.version", 
+	git_version::git_version( "/home/velezj/projects/gits/p2l-system/" ) );
+    
+    // add the parameters for the experiment
+    result.put( "result.parameters.model_id", model );
+    result.put( "result.parameters.world_id", world );
+    result.put( "result.parameters.planner_id", planner );
+    result.put( "result.parameters.add_empty_regions", add_empty_regions );
+    result.put( "result.parameters.initial_window_fraction", initial_window_fraction );
+    result.put( "result.parameters.centered_window", centered_window );
+    result.put( "result.parameters.goal_fraction_to_find", fraction );
+    result.put( "result.parameters.experiment_id", experiment_id );
+
+    // add the trace for the experiment
+    for( size_t i = 0; i < trace.size(); ++i ) {
+      point_process_core::marked_grid_cell_t cell = trace[i];
+      std::ostringstream oss;
+      oss << cell;
+      result.add( "result.trace.", oss.str() );
+    }
+
+    // add the time taken to compute
+    result.put( "runtime.seconds", seconds_taken );
+
+    // save the document
+    couch.save( result );
+    
+
+  } catch( ... ) {
+    std::cout << "EXCEPTION storing results: " << std::endl;
+    std::cout << boost::current_exception_diagnostic_information();
+    return -2;
+  }
   
-  // build up the point process model
-  boost::shared_ptr< mcmc_point_process_t > planner_process = create_planner_process( world_window, po_vm );
-  
-  // build up the planner
-  boost::shared_ptr<grid_planner_t> planner = create_planner( planner_process, po_vm );
-
-  // get the initial window of known world
-  double frac = po_vm["initial-window-fraction"].as<double>();
-  nd_aabox_t initial_window = 
-    aabox( world_window.start, 
-	   world_window.start + ( world_window.end - world_window.start ) * frac );
-
-  // seed the planner
-  initial_window =
-    setup_planner_with_initial_observations( planner,
-					     po_vm["add-empty-regions"].as<bool>(),
-					     initial_window,
-					     ground_truth );
-
-  // create the meta and trace files
-  std::ofstream out_meta( "00-planner.meta" );
-  std::ofstream out_trace( "00-planner.trace" );
-  std::ofstream out_verbose_trace( "00-planner.verbose-trace" );
-
-  out_meta << "add_empty_regions: " << po_vm["add-empty-regions"].as<bool>() << std::endl;
-  
-  // run the planner
-  std::vector<marked_grid_cell_t> trace =
-    simulate_run_until_all_points_found( planner,
-					 po_vm["add-empty-regions"].as<bool>(),
-					 initial_window,
-					 po_vm["goal-fraction"].as<double>(),
-					 ground_truth,
-					 out_meta,
-					 out_trace,
-					 std::cout,
-					 out_verbose_trace);
-
   return 0;
 }
