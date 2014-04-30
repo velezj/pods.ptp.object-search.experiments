@@ -2,6 +2,7 @@
 #include <p2l-rawseeds-experiments/register.hpp>
 #include <point-process-experiment-core/experiment_utils.hpp>
 #include <point-process-experiment-core/experiment_runner.hpp>
+#include <math-core/io.hpp>
 #include <boost/program_options.hpp>
 #include <iostream>
 #include <fstream>
@@ -10,6 +11,7 @@
 #include <boost/exception/diagnostic_information.hpp>
 #include <erf-couchdb/couchdb.hpp>
 #include <git-version-script/git_version.hpp>
+#include <gsl/gsl_rng.h>
 
 
 
@@ -51,6 +53,9 @@ int main( int argn, char** argv )
     ( "experiment-id",
       po::value<std::string>(),
       "The experiment id")
+    ( "seed",
+      po::value<unsigned long>()->default_value( 0 ),
+      "The random seed for GSL.")
     ( "results-database-url",
       po::value<std::string>()->default_value("http://localhost:5984/rawseeds-experiment-results/"),
       "The CouchDB url to use as the results database");
@@ -66,7 +71,10 @@ int main( int argn, char** argv )
     std::cout << po_desc << std::endl;
     std::cout << "Worlds: " << std::endl;
     for( auto item : point_process_experiment_core::get_registered_worlds() ) {
-      std::cout << "    " << item << std::endl;
+      std::cout << "    " << item 
+		<< "  "
+		<< point_process_experiment_core::window_for_world( item ) 
+		<< std::endl;
     }
     std::cout << "Models: " << std::endl;
     for( auto item : point_process_experiment_core::get_registered_models() ) {
@@ -79,6 +87,9 @@ int main( int argn, char** argv )
     return 1;
   }
 
+  // set the random seed
+  gsl_rng_env_setup();
+  gsl_rng_default_seed = po_vm["seed"].as<unsigned long>();
 
   // get the settings from the options
   std::string world, model, planner;
@@ -139,15 +150,40 @@ int main( int argn, char** argv )
 	git_version::git_version( "/home/velezj/projects/gits/p2l-system/" ) );
     
     // add the parameters for the experiment
-    result.put( "result.parameters.model_id", model );
-    result.put( "result.parameters.world_id", world );
-    result.put( "result.parameters.planner_id", planner );
+    result.put( "result.parameters.model.id", model );
+    result.put( "result.parameters.world.id", world );
+    result.put( "result.parameters.planner.id", planner );
     result.put( "result.parameters.add_empty_regions", add_empty_regions );
     result.put( "result.parameters.initial_window_fraction", initial_window_fraction );
     result.put( "result.parameters.centered_window", centered_window );
     result.put( "result.parameters.goal_fraction_to_find", fraction );
     result.put( "result.parameters.experiment_id", experiment_id );
     result.put( "result.parameters.experiment_id_with_nonce", experiment_id_with_nonce );
+    result.put( "result.parameters.seed", po_vm["seed"].as<unsigned long>() );
+
+    // add teh specifics of the planning grid
+    point_process_core::marked_grid_t<bool> grid 
+      = point_process_experiment_core::get_grid_for_setup( world, model, planner );
+    result.put( "result.parameters.planner.grid.window.start", 
+		grid.window().start );
+    result.put( "result.parameters.planner.grid.window.end", 
+		grid.window().end );
+    for( size_t i = 0; i < grid.cell_sizes().size(); ++i ) {
+      result.add( "result.parameters.planner.grid.resolution.",
+		  grid.cell_sizes()[i] );
+    }
+    result.put( "result.parameters.planner.grid.total_cells",
+		grid.all_cells().size() );
+    std::vector<point_process_core::marked_grid_cell_t> marked_cells
+      = grid.all_marked_cells();
+    result.put( "result.parameters.planner.grid.num_cells_with_data",
+		marked_cells.size() );
+    for( size_t i = 0; i < marked_cells.size(); ++i ) {
+      result.add( "result.parameters.planner.grid.cells_with_data.",
+		  marked_cells[i] );
+    }
+    
+    
 
     // add the trace for the experiment
     for( size_t i = 0; i < trace.size(); ++i ) {
@@ -159,6 +195,9 @@ int main( int argn, char** argv )
 
     // add the time taken to compute
     result.put( "runtime.seconds", seconds_taken );
+
+    // add the random seed
+    result.put( "random.gsl.seed", gsl_rng_default_seed );
 
     // save the document
     couch.save( result );

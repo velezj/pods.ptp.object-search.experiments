@@ -15,6 +15,79 @@ namespace rawseeds_experiments {
 
 
   //============================================================================
+
+  std::vector<nd_point_t>
+  biccoca_27a_random( const double& f ) {
+
+    // ok, look up the centroid file SSV and parse it
+    std::ifstream fin( "/home/velezj/projects/gits/p2l-system/build/bin/data/bicocca-2009-02-27a/labeled-signs-1-centroids.ssv" );
+    std::vector<nd_point_t> points = parse_points_from_ssv_stream( fin );
+    fin.close();
+    
+    // randomly shulfffe points and pick first fraction
+    if( points.size() >= 1/f ) {
+      std::random_shuffle( points.begin(), points.end() );
+      points.erase( points.begin() + (points.size() * f),
+		    points.end() );
+    }
+    return points;
+    
+  }
+
+  //============================================================================
+
+  std::vector<nd_point_t>
+  fred_2003_random( const double& f ) {
+    // ok, look up the centroid file SSV and parse it
+    std::ifstream fin( "/home/velezj/projects/gits/p2l-system/build/bin/data/birds/fred_2003.ssv" );
+    std::vector<nd_point_t> points = parse_points_from_ssv_stream( fin, false );
+    fin.close();
+
+    // zero-align the data
+    nd_aabox_t orig_bounds = smallest_enclosing_box( points );
+    nd_point_t z = zero_point( points[0].n );
+    for( size_t i = 0; i < points.size(); ++i ) {
+      points[i] = z + (points[i] - orig_bounds.start);
+    }
+    
+    // randomly shulfffe points and pick first fraction
+    if( points.size() >= 1/f ) {
+      std::random_shuffle( points.begin(), points.end() );
+      points.erase( points.begin() + (points.size() * f),
+		    points.end() );
+    }
+    return points;
+    
+  }
+
+
+  //============================================================================
+
+  std::vector<nd_point_t>
+  fred_2003_species_random( const std::string& species, const double& f ) {
+    // ok, look up the centroid file SSV and parse it
+    std::ifstream fin( "/home/velezj/projects/gits/p2l-system/build/bin/data/birds/fred_2003_" + species + ".ssv" );
+    std::vector<nd_point_t> points = parse_points_from_ssv_stream( fin, false );
+    fin.close();
+
+    // zero-align the data
+    nd_aabox_t orig_bounds = smallest_enclosing_box( points );
+    nd_point_t z = zero_point( points[0].n );
+    for( size_t i = 0; i < points.size(); ++i ) {
+      points[i] = z + (points[i] - orig_bounds.start);
+    }
+    
+    // randomly shulfffe points and pick first fraction
+    if( points.size() >= 1/f ) {
+      std::random_shuffle( points.begin(), points.end() );
+      points.erase( points.begin() + (points.size() * f),
+		    points.end() );
+    }
+    return points;
+    
+  }
+
+  //============================================================================
   
   std::vector<nd_point_t>
   groundtruth_for_world( const std::string& world )
@@ -123,6 +196,49 @@ namespace rawseeds_experiments {
 
     if( world == "small_001" ) {
       return aabox( point( 0.0, 0.0 ), point( 10.0, 10.0 ) );
+    }
+
+    if( world == "birds::fred_2003" ) {
+      // TODO: precompute this and return it here
+      // ok, look up the centroid file SSV and parse it
+      std::ifstream fin( "/home/velezj/projects/gits/p2l-system/build/bin/data/birds/fred_2003.ssv" );
+      std::vector<nd_point_t> points = parse_points_from_ssv_stream( fin, false );
+      fin.close();
+      
+      // zero-align the data
+      nd_aabox_t orig_bounds = smallest_enclosing_box( points );
+      nd_point_t z = zero_point( points[0].n );
+      for( size_t i = 0; i < points.size(); ++i ) {
+      	points[i] = z + (points[i] - orig_bounds.start);
+      }
+      
+      nd_aabox_t bbox = smallest_enclosing_box( points );
+      
+      // enlarge the box by soem fraction
+      double f = 0.0;
+      double d = magnitude( bbox.end - bbox.start ) * f / 2.0;
+      nd_aabox_t lbox = aabox( bbox.start + ( -d ) * direction( bbox.end - bbox.start ),
+			       bbox.start + ( ( magnitude(bbox.end - bbox.start) + d ) * direction( bbox.end - bbox.start) )
+			       );
+
+      // make sure all points are innside this box
+      if( points_inside_window( lbox, points ).size() != points.size() ) {
+	std::cout << "Original and Larger windows:  " << bbox << "  " << lbox << std::endl;
+	std::vector<nd_point_t> inside = points_inside_window( lbox, points );
+	std::cout << "  Missed points#: " << (points.size() - inside.size()) << std::endl;
+	for( size_t i = 0; i < points.size(); ++i ) {
+	  for( size_t j = 0; j < inside.size(); ++j ) {
+	    if( points[i] == inside[j]) {
+	      continue;
+	    }
+	  }
+	  // found a point NOT inside the window
+	  std::cout << "  Point LEFT OUT: " << points[i] << std::endl;
+	}
+      }
+      assert( points_inside_window( lbox, points ).size() == points.size() );
+      
+      return lbox;
     }
 
     // if we gothere, unknwon world

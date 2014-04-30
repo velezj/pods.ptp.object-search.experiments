@@ -23,21 +23,63 @@ namespace rawseeds_experiments {
 	bind( rawseeds_experiments::groundtruth_for_world, "biccoca_2009_02_27a" ),
 	bind( rawseeds_experiments::window_for_world, "biccoca_2009_02_27a" ) );
     register_world
-      ( "rawseeds::random-subset-0.5::biccoca_2009_02_27a",
-	bind( rawseeds_experiments::groundtruth_for_world, "random-subset-0.5::biccoca_2009_02_27a" ),
+      ( "rawseeds::random-subset-0.1::biccoca_2009_02_27a",
+	bind( rawseeds_experiments::biccoca_27a_random, 0.1 ),
 	bind( rawseeds_experiments::window_for_world, "biccoca_2009_02_27a" ) );
     register_world
-      ( "rawseeds::random-subset-0.1::biccoca_2009_02_27a",
-	bind( rawseeds_experiments::groundtruth_for_world, "random-subset-0.1::biccoca_2009_02_27a" ),
+      ( "rawseeds::random-subset-0.2::biccoca_2009_02_27a",
+	bind( rawseeds_experiments::biccoca_27a_random, 0.2 ),
 	bind( rawseeds_experiments::window_for_world, "biccoca_2009_02_27a" ) );
     register_world
       ( "rawseeds::random-subset-0.3::biccoca_2009_02_27a",
-	bind( rawseeds_experiments::groundtruth_for_world, "random-subset-0.3::biccoca_2009_02_27a" ),
+	bind( rawseeds_experiments::biccoca_27a_random, 0.3 ),
+	bind( rawseeds_experiments::window_for_world, "biccoca_2009_02_27a" ) );
+    register_world
+      ( "rawseeds::random-subset-0.4::biccoca_2009_02_27a",
+	bind( rawseeds_experiments::biccoca_27a_random, 0.4 ),
+	bind( rawseeds_experiments::window_for_world, "biccoca_2009_02_27a" ) );
+    register_world
+      ( "rawseeds::random-subset-0.5::biccoca_2009_02_27a",
+	bind( rawseeds_experiments::biccoca_27a_random, 0.5 ),
+	bind( rawseeds_experiments::window_for_world, "biccoca_2009_02_27a" ) );
+    register_world
+      ( "rawseeds::random-subset-0.6::biccoca_2009_02_27a",
+	bind( rawseeds_experiments::biccoca_27a_random, 0.6 ),
+	bind( rawseeds_experiments::window_for_world, "biccoca_2009_02_27a" ) );
+    register_world
+      ( "rawseeds::random-subset-0.7::biccoca_2009_02_27a",
+	bind( rawseeds_experiments::biccoca_27a_random, 0.7 ),
+	bind( rawseeds_experiments::window_for_world, "biccoca_2009_02_27a" ) );
+    register_world
+      ( "rawseeds::random-subset-0.8::biccoca_2009_02_27a",
+	bind( rawseeds_experiments::biccoca_27a_random, 0.8 ),
+	bind( rawseeds_experiments::window_for_world, "biccoca_2009_02_27a" ) );
+    register_world
+      ( "rawseeds::random-subset-0.9::biccoca_2009_02_27a",
+	bind( rawseeds_experiments::biccoca_27a_random, 0.9 ),
 	bind( rawseeds_experiments::window_for_world, "biccoca_2009_02_27a" ) );
     register_world
       ( "rawseeds::small_001",
 	bind( rawseeds_experiments::groundtruth_for_world, "small_001" ),
 	bind( rawseeds_experiments::window_for_world, "small_001" ) );
+    register_world
+      ( "birds::fred_2003",
+	bind( rawseeds_experiments::fred_2003_random, 1.0 ),
+	bind( rawseeds_experiments::window_for_world, "birds::fred_2003" ) );
+    register_world
+      ( "birds::random-subset-0.1::fred_2003",
+	bind( rawseeds_experiments::fred_2003_random, 0.1 ),
+	bind( rawseeds_experiments::window_for_world, "birds::fred_2003" ) );
+    register_world
+      ( "birds::WISP::fred_2003",
+	bind( rawseeds_experiments::fred_2003_species_random, "WISP", 1.0 ),
+	bind( rawseeds_experiments::window_for_world, "birds::fred_2003" ) );
+    register_world
+      ( "birds::SOFU::fred_2003",
+	bind( rawseeds_experiments::fred_2003_species_random, "SOFU", 1.0 ),
+	bind( rawseeds_experiments::window_for_world, "birds::fred_2003" ) );
+
+
     
 
     // register all models
@@ -110,6 +152,11 @@ namespace rawseeds_experiments {
     register_model
       ( "rawseeds::ruler_2d_mean_008",
 	model_f);
+    model_f = rawseeds_experiments::models::birds_mean_001;
+    register_model
+      ( "birds::birds_mean_001",
+	model_f);
+
 
 
     
@@ -139,6 +186,10 @@ namespace rawseeds_experiments {
     register_planner
       ( "rawseeds::coverage_planner",
 	planner_f);
+    planner_f = rawseeds_experiments::planners::coverage_planner_1e3grid;
+    register_planner
+      ( "rawseeds::coverage_planner_1e3grid",
+	planner_f);
     planner_f = rawseeds_experiments::planners::shortest_path_next_planner_002;
     register_planner
       ( "rawseeds::shortest_path_next_planner_002",
@@ -146,6 +197,10 @@ namespace rawseeds_experiments {
     planner_f = rawseeds_experiments::planners::shortest_path_next_planner_002_10grid;
     register_planner
       ( "rawseeds::shortest_path_next_planner_002_10grid",
+	planner_f);
+    planner_f = rawseeds_experiments::planners::shortest_path_next_planner_002_1e3grid;
+    register_planner
+      ( "rawseeds::shortest_path_next_planner_002_1e3grid",
 	planner_f);
     planner_f = rawseeds_experiments::planners::shortest_path_next_planner_003_10grid;
     register_planner
@@ -166,6 +221,10 @@ namespace rawseeds_experiments {
     planner_f = rawseeds_experiments::planners::one_action_entropy_reduction_planner_002_10grid;
     register_planner
       ( "rawseeds::one_action_entropy_reduction_planner_002_10grid",
+	planner_f);
+    planner_f = rawseeds_experiments::planners::one_action_entropy_reduction_planner_002_1e3grid;
+    register_planner
+      ( "rawseeds::one_action_entropy_reduction_planner_002_1e3grid",
 	planner_f);
 
   }

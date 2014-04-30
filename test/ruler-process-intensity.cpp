@@ -49,7 +49,8 @@ int main( int argc, char** argv )
 
   // get the world to test
   //std::string data_id = "rawseeds::small_001";
-  std::string data_id = "rawseeds::biccoca_2009_02_27a";
+  //std::string data_id = "rawseeds::biccoca_2009_02_27a";
+  std::string data_id = "birds::fred_2003";
   std::vector<nd_point_t> groundtruth = groundtruth_for_world( data_id );
   nd_aabox_t window = window_for_world( data_id );
 
@@ -75,7 +76,7 @@ int main( int argc, char** argv )
     // all of the ground truth and some empty regions
     bool add_data = true;
     if( add_data ) {
-      double model_res = 5.0;
+      double model_res = 1000.0;
       marked_grid_t<bool> grid = point_set_as_grid( groundtruth, window, model_res );
       std::cout << "marked cells: " << grid.all_marked_cells().size() << " / " << grid.all_cells().size() << std::endl;
       model->add_observations( groundtruth );
@@ -98,12 +99,12 @@ int main( int argc, char** argv )
     }
 
     // compute the bins to each be a certain meters across
-    double meters_per_bin = 1.0;
+    double meters_per_bin = 100.0;
     size_t bins_for_intensity = (int)( ( window.end.coordinate[0] - window.start.coordinate[1] ) / meters_per_bin );
 
     // create the name of the intensity image
     std::ostringstream oss;
-    oss << "intensity-7-" << add_data << "-" << model_id << ".bmp";
+    oss << "intensity-10-" << add_data << "-" << model_id << ".bmp";
     std::cout << "  ... creating intensity estimate  ..." << std::endl;
     size_t intensity_samples = 1000;
     size_t skip_samples = 10;

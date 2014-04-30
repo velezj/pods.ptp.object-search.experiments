@@ -26,6 +26,22 @@ namespace rawseeds_experiments {
   groundtruth_for_world( const std::string& world );
 
   // Description:
+  // Returns a random subset from the biccoca_2009_02_27a dataset
+  std::vector<math_core::nd_point_t>
+  biccoca_27a_random( const double& f );
+
+  // Description:
+  // Returns a random subset from the fred_2003 bird dataset
+  std::vector<math_core::nd_point_t>
+  fred_2003_random( const double& f );
+
+  // Description:
+  // Returns a random subset from the fred_2003_<species> bird dataset
+  std::vector<math_core::nd_point_t>
+  fred_2003_species_random( const std::string& species, const double& f );
+
+
+  // Description:
   // Returns the window/bounds for a rawseeds world.
   // Currently known worlds are:
   //    biccoca_2009_02_27a
