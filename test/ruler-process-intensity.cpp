@@ -50,7 +50,7 @@ int main( int argc, char** argv )
   // get the world to test
   //std::string data_id = "rawseeds::small_001";
   //std::string data_id = "rawseeds::biccoca_2009_02_27a";
-  std::string data_id = "birds::fred_2003";
+  std::string data_id = "birds::WISP::fred_2003";
   std::vector<nd_point_t> groundtruth = groundtruth_for_world( data_id );
   nd_aabox_t window = window_for_world( data_id );
 
@@ -59,9 +59,11 @@ int main( int argc, char** argv )
 
   std::vector<std::string> models{ 
     //"rawseeds::igmm_2d_weak_001",
-      // "rawseeds::ruler_2d_mean_006",
-      // "rawseeds::ruler_2d_mean_007",
-      "rawseeds::ruler_2d_mean_008",
+    // "rawseeds::ruler_2d_mean_006",
+    // "rawseeds::ruler_2d_mean_007",
+    //"rawseeds::ruler_2d_mean_008",
+    //"birds::birds_mean_001",
+      "birds::birds_igmm_001"
       };
   
   // test all known models
@@ -104,7 +106,7 @@ int main( int argc, char** argv )
 
     // create the name of the intensity image
     std::ostringstream oss;
-    oss << "intensity-10-" << add_data << "-" << model_id << ".bmp";
+    oss << "intensity-11b-" << add_data << "-" << model_id << ".bmp";
     std::cout << "  ... creating intensity estimate  ..." << std::endl;
     size_t intensity_samples = 1000;
     size_t skip_samples = 10;

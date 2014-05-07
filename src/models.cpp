@@ -955,6 +955,46 @@ namespace rawseeds_experiments { namespace models {
       return planner_process;
     }
 
+    //=====================================================================
+
+
+    boost::shared_ptr<point_process_core::mcmc_point_process_t>
+    birds_igmm_001( const math_core::nd_aabox_t& window,
+		    const std::vector< math_core::nd_point_t >& gt  )
+    {
+      int dim = 2;
+      igmm_point_process_model_t model;
+      model.alpha = 5000;
+      model.mean_distribution.dimension = dim;
+      model.mean_distribution.means = ( window.start + 0.25 * ( window.end - window.start ) ).coordinate;
+      double mcov = 0.5 * magnitude(window.end - window.start );
+      model.mean_distribution.covariance = to_dense_mat( Eigen::MatrixXd::Identity(dim,dim) * mcov );
+      model.precision_distribution.shape = 3;
+      model.precision_distribution.rate = 30;
+      model.num_points_per_gaussian_distribution.shape = 2;
+      model.num_points_per_gaussian_distribution.rate = 0.5;
+
+      std::vector<nd_point_t> init_points = gt;
+      std::random_shuffle( init_points.begin(),
+			   init_points.end() );
+      if( init_points.size() > 2 ) {
+	init_points.erase( init_points.begin() + 2,
+			   init_points.end() );
+      }
+      if( init_points.size() < 2 ) {
+	std::cout << "* NOT ENOUGH POINTS for MODEL" << std::endl;
+      }
+      boost::shared_ptr<igmm_point_process_t> process = 
+	boost::shared_ptr<igmm_point_process_t>
+	( new igmm_point_process_t( window,
+				    model,
+				    init_points ) );
+      boost::shared_ptr<mcmc_point_process_t> planner_process
+	= boost::shared_ptr<mcmc_point_process_t>( process );
+      
+      return planner_process;
+    }
+
 
     //=====================================================================
 

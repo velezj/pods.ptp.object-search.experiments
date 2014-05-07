@@ -158,6 +158,15 @@ namespace rawseeds_experiments { namespace models {
     birds_mean_001( const math_core::nd_aabox_t& window,
 		    const std::vector< math_core::nd_point_t >& gt  );
 
+
+    //======================================================================
+
+    // Description:
+    // A igmm-point-process model with weak priors for birds data
+    boost::shared_ptr<point_process_core::mcmc_point_process_t>
+    birds_igmm_001( const math_core::nd_aabox_t& window,
+		    const std::vector< math_core::nd_point_t >& gt  );
+
     
     //======================================================================
 

@@ -12,7 +12,8 @@
 #include <erf-couchdb/couchdb.hpp>
 #include <git-version-script/git_version.hpp>
 #include <gsl/gsl_rng.h>
-
+#include <sys/types.h>
+#include <unistd.h>
 
 
 namespace po = boost::program_options;
@@ -108,7 +109,7 @@ int main( int argn, char** argv )
   experiment_id = po_vm["experiment-id"].as<std::string>();
 
   std::ostringstream oss;
-  oss << experiment_id << "-" << time(NULL);
+  oss << experiment_id << "-" << time(NULL) << "-" << getpid();
   std::string experiment_id_with_nonce = oss.str();
 
   std::vector<point_process_core::marked_grid_cell_t> trace;

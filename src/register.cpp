@@ -156,6 +156,10 @@ namespace rawseeds_experiments {
     register_model
       ( "birds::birds_mean_001",
 	model_f);
+    model_f = rawseeds_experiments::models::birds_igmm_001;
+    register_model
+      ( "birds::birds_igmm_001",
+	model_f);
 
 
 
