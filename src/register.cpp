@@ -190,6 +190,10 @@ namespace rawseeds_experiments {
     register_planner
       ( "rawseeds::coverage_planner",
 	planner_f);
+    planner_f = rawseeds_experiments::planners::coverage_planner_200grid;
+    register_planner
+      ( "rawseeds::coverage_planner_200grid",
+	planner_f);
     planner_f = rawseeds_experiments::planners::coverage_planner_1e3grid;
     register_planner
       ( "rawseeds::coverage_planner_1e3grid",
@@ -225,6 +229,10 @@ namespace rawseeds_experiments {
     planner_f = rawseeds_experiments::planners::one_action_entropy_reduction_planner_002_10grid;
     register_planner
       ( "rawseeds::one_action_entropy_reduction_planner_002_10grid",
+	planner_f);
+    planner_f = rawseeds_experiments::planners::one_action_entropy_reduction_planner_002_200grid;
+    register_planner
+      ( "rawseeds::one_action_entropy_reduction_planner_002_200grid",
 	planner_f);
     planner_f = rawseeds_experiments::planners::one_action_entropy_reduction_planner_002_1e3grid;
     register_planner
