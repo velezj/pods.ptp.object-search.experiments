@@ -40,11 +40,13 @@ namespace rawseeds_experiments {
   std::vector<math_core::nd_point_t>
   fred_2003_species_random( const std::string& species, const double& f );
 
+  // Description:
+  // Returns a random world with the given number of points
+  std::vector<math_core::nd_point_t>
+  random_world_001( const size_t& n );
 
   // Description:
   // Returns the window/bounds for a rawseeds world.
-  // Currently known worlds are:
-  //    biccoca_2009_02_27a
   math_core::nd_aabox_t
   window_for_world( const std::string& world );
 }

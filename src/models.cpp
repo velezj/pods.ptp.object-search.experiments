@@ -895,6 +895,72 @@ namespace rawseeds_experiments { namespace models {
 
 
     boost::shared_ptr<point_process_core::mcmc_point_process_t>
+    ruler_2d_mean_lengthprior_008
+    ( const math_core::nd_aabox_t& window,
+      const std::vector< math_core::nd_point_t >& gt  )
+    {
+      int dim = 2;
+      std::vector<double> two_unit, unit;
+      for( size_t i = 0; i < dim; ++i ) {
+	unit.push_back( 1.0 );
+	two_unit.push_back( 2.0 );
+      }
+      ruler_point_process_model_t model;
+      model.prior_ruler_start_mean = window.start + 0.25 * ( window.end - window.start );
+      model.prior_ruler_direction_mean = window.end;
+      model.alpha = 5000;
+      model.precision_distribution.shape = 3.0;
+      model.precision_distribution.rate = 30.0;
+      model.period_distribution.p = pow( 0.15 * magnitude(window.end - window.start ) ,2);
+      model.period_distribution.q = 0.15 * magnitude(window.end - window.start ) * 2;
+      model.period_distribution.r = 2;
+      model.period_distribution.s = 2;
+      model.ruler_length_distribution.p = pow( 0.5 * magnitude(window.end - window.start ) , 2);
+      model.ruler_length_distribution.q = 0.5 * magnitude(window.end - window.start ) * 2;
+      model.ruler_length_distribution.r = 2;
+      model.ruler_length_distribution.s = 2;
+      model.ruler_start_mean_distribution.dimension = dim;
+      nd_point_t mp = centroid( window );
+      model.ruler_start_mean_distribution.means.push_back( mp.coordinate[0] );
+      model.ruler_start_mean_distribution.means.push_back( mp.coordinate[1] );
+      double mcov = 0.5 * magnitude(window.end - window.start );
+      model.ruler_start_mean_distribution.covariance = to_dense_mat( Eigen::MatrixXd::Identity(dim,dim) * (mcov * mcov) );
+      model.ruler_start_precision_distribution.shape = 6.0 * magnitude(window.end - window.start );
+      model.ruler_start_precision_distribution.rate = 4;
+      model.ruler_direction_mean_distribution.dimension = dim;
+      model.ruler_direction_mean_distribution.means.push_back( 1.0 );
+      model.ruler_direction_mean_distribution.means.push_back( 1.0 );
+      model.ruler_direction_mean_distribution.covariance = to_dense_mat( Eigen::MatrixXd::Identity(dim,dim) * 1.0 );
+      model.ruler_direction_precision_distribution.shape = 5;
+      model.ruler_direction_precision_distribution.rate = 1;
+      std::vector<nd_point_t> init_points = gt;
+      std::random_shuffle( init_points.begin(),
+			   init_points.end() );
+      if( init_points.size() > 2 ) {
+	init_points.erase( init_points.begin() + 2,
+			   init_points.end() );
+      }
+      if( init_points.size() < 2 ) {
+	std::cout << "* NOT ENOUGH POINTS for MODEL" << std::endl;
+      }
+      boost::shared_ptr<ruler_point_process_t> process = 
+	boost::shared_ptr<ruler_point_process_t>
+	( new ruler_point_process_t( window,
+				     model,
+				     init_points ) );
+      process->set_liklihood_algorithm( mean_likelihood_approximation );
+      process->set_ruler_length_algorithm( length_sampled_from_prior );
+      boost::shared_ptr<mcmc_point_process_t> planner_process
+	= boost::shared_ptr<mcmc_point_process_t>( process );
+      
+      return planner_process;
+    }
+
+
+    //=====================================================================
+
+
+    boost::shared_ptr<point_process_core::mcmc_point_process_t>
     birds_mean_001( const math_core::nd_aabox_t& window,
 		    const std::vector< math_core::nd_point_t >& gt  )
     {
@@ -954,6 +1020,144 @@ namespace rawseeds_experiments { namespace models {
       
       return planner_process;
     }
+
+    //=====================================================================
+
+
+    boost::shared_ptr<point_process_core::mcmc_point_process_t>
+    birds_mean_002a( const math_core::nd_aabox_t& window,
+		     const std::vector< math_core::nd_point_t >& gt  )
+    {
+      int dim = 2;
+      std::vector<double> two_unit, unit;
+      for( size_t i = 0; i < dim; ++i ) {
+	unit.push_back( 1.0 );
+	two_unit.push_back( 2.0 );
+      }
+      ruler_point_process_model_t model;
+      model.prior_ruler_start_mean = window.start;
+      model.prior_ruler_start_mean.coordinate[0] += 0.25 * ( window.end.coordinate[0] - window.start.coordinate[0] );
+      model.prior_ruler_start_mean.coordinate[1] += 0.75 * ( window.end.coordinate[1] - window.start.coordinate[1] );
+      model.prior_ruler_direction_mean = window.end;
+      model.prior_ruler_direction_mean.coordinate[0] = 1.0;
+      model.prior_ruler_direction_mean.coordinate[1] = -1.0;
+      model.alpha = 5000;
+      model.precision_distribution.shape = 3.0;
+      model.precision_distribution.rate = 30.0;
+      model.period_distribution.p = pow( 0.05 * magnitude(window.end - window.start ) ,2);
+      model.period_distribution.q = 0.05 * magnitude(window.end - window.start ) * 2;
+      model.period_distribution.r = 2;
+      model.period_distribution.s = 2;
+      model.ruler_length_distribution.p = pow( 0.5 * magnitude(window.end - window.start ) , 2);
+      model.ruler_length_distribution.q = 0.5 * magnitude(window.end - window.start ) * 2;
+      model.ruler_length_distribution.r = 2;
+      model.ruler_length_distribution.s = 2;
+      model.ruler_start_mean_distribution.dimension = dim;
+      nd_point_t mp = centroid( window );
+      mp = window.start + 0.25 * ( window.end - window.start );
+      model.ruler_start_mean_distribution.means.push_back( mp.coordinate[0] );
+      model.ruler_start_mean_distribution.means.push_back( mp.coordinate[1] );
+      double mcov = 0.5 * magnitude(window.end - window.start );
+      model.ruler_start_mean_distribution.covariance = to_dense_mat( Eigen::MatrixXd::Identity(dim,dim) * (mcov * mcov) );
+      model.ruler_start_precision_distribution.shape = 6.0 * magnitude(window.end - window.start );
+      model.ruler_start_precision_distribution.rate = 4;
+      model.ruler_direction_mean_distribution.dimension = dim;
+      model.ruler_direction_mean_distribution.means.push_back( 1.0 );
+      model.ruler_direction_mean_distribution.means.push_back( 0.0 );
+      model.ruler_direction_mean_distribution.covariance = to_dense_mat( Eigen::MatrixXd::Identity(dim,dim) * 0.1 );
+      model.ruler_direction_precision_distribution.shape = 5;
+      model.ruler_direction_precision_distribution.rate = 1;
+      std::vector<nd_point_t> init_points = gt;
+      std::random_shuffle( init_points.begin(),
+			   init_points.end() );
+      if( init_points.size() > 2 ) {
+	init_points.erase( init_points.begin() + 2,
+			   init_points.end() );
+      }
+      if( init_points.size() < 2 ) {
+	std::cout << "* NOT ENOUGH POINTS for MODEL" << std::endl;
+      }
+      boost::shared_ptr<ruler_point_process_t> process = 
+	boost::shared_ptr<ruler_point_process_t>
+	( new ruler_point_process_t( window,
+				     model,
+				     init_points ) );
+      process->set_liklihood_algorithm( mean_likelihood_approximation );
+      boost::shared_ptr<mcmc_point_process_t> planner_process
+	= boost::shared_ptr<mcmc_point_process_t>( process );
+      
+      return planner_process;
+    }
+
+
+    //=====================================================================
+
+
+    boost::shared_ptr<point_process_core::mcmc_point_process_t>
+    birds_mean_002b( const math_core::nd_aabox_t& window,
+		     const std::vector< math_core::nd_point_t >& gt  )
+    {
+      int dim = 2;
+      std::vector<double> two_unit, unit;
+      for( size_t i = 0; i < dim; ++i ) {
+	unit.push_back( 1.0 );
+	two_unit.push_back( 2.0 );
+      }
+      ruler_point_process_model_t model;
+      model.prior_ruler_start_mean = window.start;
+      model.prior_ruler_start_mean.coordinate[0] += 0.25 * ( window.end.coordinate[0] - window.start.coordinate[0] );
+      model.prior_ruler_start_mean.coordinate[1] += 0.75 * ( window.end.coordinate[1] - window.start.coordinate[1] );
+      model.prior_ruler_direction_mean = window.end;
+      model.prior_ruler_direction_mean.coordinate[0] = 1.0;
+      model.prior_ruler_direction_mean.coordinate[1] = -1.0;
+      model.alpha = 5;
+      model.precision_distribution.shape = 3.0;
+      model.precision_distribution.rate = 30.0;
+      model.period_distribution.p = pow( 0.05 * magnitude(window.end - window.start ) ,2);
+      model.period_distribution.q = 0.05 * magnitude(window.end - window.start ) * 2;
+      model.period_distribution.r = 2;
+      model.period_distribution.s = 2;
+      model.ruler_length_distribution.p = pow( 0.5 * magnitude(window.end - window.start ) , 2);
+      model.ruler_length_distribution.q = 0.5 * magnitude(window.end - window.start ) * 2;
+      model.ruler_length_distribution.r = 2;
+      model.ruler_length_distribution.s = 2;
+      model.ruler_start_mean_distribution.dimension = dim;
+      nd_point_t mp = centroid( window );
+      mp = window.start + 0.25 * ( window.end - window.start );
+      model.ruler_start_mean_distribution.means.push_back( mp.coordinate[0] );
+      model.ruler_start_mean_distribution.means.push_back( mp.coordinate[1] );
+      double mcov = 0.5 * magnitude(window.end - window.start );
+      model.ruler_start_mean_distribution.covariance = to_dense_mat( Eigen::MatrixXd::Identity(dim,dim) * (mcov * mcov) );
+      model.ruler_start_precision_distribution.shape = 6.0 * magnitude(window.end - window.start );
+      model.ruler_start_precision_distribution.rate = 4;
+      model.ruler_direction_mean_distribution.dimension = dim;
+      model.ruler_direction_mean_distribution.means.push_back( 1.0 );
+      model.ruler_direction_mean_distribution.means.push_back( 0.0 );
+      model.ruler_direction_mean_distribution.covariance = to_dense_mat( Eigen::MatrixXd::Identity(dim,dim) * 0.1 );
+      model.ruler_direction_precision_distribution.shape = 5;
+      model.ruler_direction_precision_distribution.rate = 1;
+      std::vector<nd_point_t> init_points = gt;
+      std::random_shuffle( init_points.begin(),
+			   init_points.end() );
+      if( init_points.size() > 2 ) {
+	init_points.erase( init_points.begin() + 2,
+			   init_points.end() );
+      }
+      if( init_points.size() < 2 ) {
+	std::cout << "* NOT ENOUGH POINTS for MODEL" << std::endl;
+      }
+      boost::shared_ptr<ruler_point_process_t> process = 
+	boost::shared_ptr<ruler_point_process_t>
+	( new ruler_point_process_t( window,
+				     model,
+				     init_points ) );
+      process->set_liklihood_algorithm( mean_likelihood_approximation );
+      boost::shared_ptr<mcmc_point_process_t> planner_process
+	= boost::shared_ptr<mcmc_point_process_t>( process );
+      
+      return planner_process;
+    }
+
 
     //=====================================================================
 

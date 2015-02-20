@@ -150,6 +150,16 @@ namespace rawseeds_experiments { namespace models {
     ruler_2d_mean_008( const math_core::nd_aabox_t& window,
 			const std::vector< math_core::nd_point_t >& gt  );
 
+    
+    //======================================================================
+
+    // Description:
+    // A ruler-point-process model with weak priors
+    boost::shared_ptr<point_process_core::mcmc_point_process_t>
+    ruler_2d_mean_lengthprior_008
+    ( const math_core::nd_aabox_t& window,
+      const std::vector< math_core::nd_point_t >& gt  );
+
     //======================================================================
 
     // Description:
@@ -157,6 +167,19 @@ namespace rawseeds_experiments { namespace models {
     boost::shared_ptr<point_process_core::mcmc_point_process_t>
     birds_mean_001( const math_core::nd_aabox_t& window,
 		    const std::vector< math_core::nd_point_t >& gt  );
+
+
+    //======================================================================
+
+    // Description:
+    // A ruler-point-process model with weak priors for birds data
+    boost::shared_ptr<point_process_core::mcmc_point_process_t>
+    birds_mean_002a( const math_core::nd_aabox_t& window,
+		     const std::vector< math_core::nd_point_t >& gt  );
+    boost::shared_ptr<point_process_core::mcmc_point_process_t>
+    birds_mean_002b( const math_core::nd_aabox_t& window,
+		     const std::vector< math_core::nd_point_t >& gt  );
+
 
 
     //======================================================================

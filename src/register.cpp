@@ -78,6 +78,63 @@ namespace rawseeds_experiments {
       ( "birds::SOFU::fred_2003",
 	bind( rawseeds_experiments::fred_2003_species_random, "SOFU", 1.0 ),
 	bind( rawseeds_experiments::window_for_world, "birds::fred_2003" ) );
+    register_world
+      ( "random_001::200",
+	bind( rawseeds_experiments::random_world_001, 200 ),
+	bind( rawseeds_experiments::window_for_world, "random_001" ) );
+    register_world
+      ( "random_001::2000",
+	bind( rawseeds_experiments::random_world_001, 2000 ),
+	bind( rawseeds_experiments::window_for_world, "random_001" ) );
+    register_world
+      ( "random_001::10",
+	bind( rawseeds_experiments::random_world_001, 10 ),
+	bind( rawseeds_experiments::window_for_world, "random_001" ) );
+    register_world
+      ( "random_001::20",
+	bind( rawseeds_experiments::random_world_001, 20 ),
+	bind( rawseeds_experiments::window_for_world, "random_001" ) );
+    register_world
+      ( "random_001::30",
+	bind( rawseeds_experiments::random_world_001, 30 ),
+	bind( rawseeds_experiments::window_for_world, "random_001" ) );
+    register_world
+      ( "random_001::40",
+	bind( rawseeds_experiments::random_world_001, 40 ),
+	bind( rawseeds_experiments::window_for_world, "random_001" ) );
+    register_world
+      ( "random_001::50",
+	bind( rawseeds_experiments::random_world_001, 50 ),
+	bind( rawseeds_experiments::window_for_world, "random_001" ) );
+    register_world
+      ( "random_001::60",
+	bind( rawseeds_experiments::random_world_001, 60 ),
+	bind( rawseeds_experiments::window_for_world, "random_001" ) );
+    register_world
+      ( "random_001::70",
+	bind( rawseeds_experiments::random_world_001, 70 ),
+	bind( rawseeds_experiments::window_for_world, "random_001" ) );
+    register_world
+      ( "random_001::80",
+	bind( rawseeds_experiments::random_world_001, 80 ),
+	bind( rawseeds_experiments::window_for_world, "random_001" ) );
+    register_world
+      ( "random_001::90",
+	bind( rawseeds_experiments::random_world_001, 90 ),
+	bind( rawseeds_experiments::window_for_world, "random_001" ) );
+    register_world
+      ( "random_001::100",
+	bind( rawseeds_experiments::random_world_001, 100 ),
+	bind( rawseeds_experiments::window_for_world, "random_001" ) );
+    register_world
+      ( "random_001::1000",
+	bind( rawseeds_experiments::random_world_001, 1000 ),
+	bind( rawseeds_experiments::window_for_world, "random_001" ) );
+    register_world
+      ( "random_001::10000",
+	bind( rawseeds_experiments::random_world_001, 10000 ),
+	bind( rawseeds_experiments::window_for_world, "random_001" ) );
+
 
 
     
@@ -152,9 +209,21 @@ namespace rawseeds_experiments {
     register_model
       ( "rawseeds::ruler_2d_mean_008",
 	model_f);
+    model_f = rawseeds_experiments::models::ruler_2d_mean_lengthprior_008;
+    register_model
+      ( "rawseeds::ruler_2d_mean_lengthprior_008",
+	model_f);
     model_f = rawseeds_experiments::models::birds_mean_001;
     register_model
       ( "birds::birds_mean_001",
+	model_f);
+    model_f = rawseeds_experiments::models::birds_mean_002a;
+    register_model
+      ( "birds::birds_mean_002a",
+	model_f);
+    model_f = rawseeds_experiments::models::birds_mean_002b;
+    register_model
+      ( "birds::birds_mean_002b",
 	model_f);
     model_f = rawseeds_experiments::models::birds_igmm_001;
     register_model
@@ -237,6 +306,10 @@ namespace rawseeds_experiments {
     planner_f = rawseeds_experiments::planners::one_action_entropy_reduction_planner_002_1e3grid;
     register_planner
       ( "rawseeds::one_action_entropy_reduction_planner_002_1e3grid",
+	planner_f);
+    planner_f = rawseeds_experiments::planners::random_planner_10grid;
+    register_planner
+      ( "rawseeds::random_planner_10grid",
 	planner_f);
 
   }

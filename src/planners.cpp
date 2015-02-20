@@ -3,6 +3,7 @@
 #include <planner-core/shortest_path_next_planner.hpp>
 #include <planner-core/coverage_planner.hpp>
 #include <planner-core/one_action_entropy_reduction_planner.hpp>
+#include <planner-core/random_planner.hpp>
 
 using namespace planner_core;
 
@@ -529,6 +530,26 @@ namespace rawseeds_experiments { namespace planners {
 
     //=====================================================================
 
+    boost::shared_ptr<planner_core::grid_planner_t>
+    random_planner_10grid
+    (boost::shared_ptr<point_process_core::mcmc_point_process_t>& model)
+    {
+      grid_planner_parameters_t planner_params;
+      planner_params.burnin_mcmc_iterations = 1;
+      planner_params.update_model_mcmc_iterations = 1;
+      planner_params.grid_cell_size = 10.0;
+      boost::shared_ptr<grid_planner_t> planner
+	= boost::shared_ptr<grid_planner_t>
+	(
+	 new random_planner_t ( model,
+				planner_params )
+	 );
+      
+      return planner;
+      
+    }
+
+    //=====================================================================
     
 
   }

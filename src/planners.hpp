@@ -157,6 +157,13 @@ namespace rawseeds_experiments { namespace planners {
     one_action_entropy_reduction_planner_002_1e3grid
     (boost::shared_ptr<point_process_core::mcmc_point_process_t>& model);
 
+    //=====================================================================
+    
+    // Descripion:
+    // A standard random planners
+    boost::shared_ptr<planner_core::grid_planner_t>
+    random_planner_10grid
+    (boost::shared_ptr<point_process_core::mcmc_point_process_t>& model);
 
 
   }

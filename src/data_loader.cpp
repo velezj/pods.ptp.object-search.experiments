@@ -2,6 +2,7 @@
 #include "data_loader.hpp"
 #include <point-process-experiment-core/data_io.hpp>
 #include <math-core/io.hpp>
+#include <probability-core/uniform.hpp>
 #include <fstream>
 #include <algorithm>
 #include <iostream>
@@ -184,6 +185,18 @@ namespace rawseeds_experiments {
     // if we got here., unknown world
     BOOST_THROW_EXCEPTION( unknown_rawseeds_world_exception() );
   }
+
+  //============================================================================
+
+  std::vector<nd_point_t>
+  random_world_001( const size_t& n )
+  {
+    std::vector<nd_point_t> points;
+    for( size_t i = 0; i < n; ++i ) {
+      points.push_back( probability_core::sample_from( probability_core::uniform_distribution( point(0.0,0.0), point(100.0,100.0) ) ) );
+    }
+    return points;
+  }
   
   //============================================================================
   
@@ -196,6 +209,11 @@ namespace rawseeds_experiments {
 
     if( world == "small_001" ) {
       return aabox( point( 0.0, 0.0 ), point( 10.0, 10.0 ) );
+    }
+
+    if( world == "random_001" ) {
+      return aabox( point( 0.0,0.0 ),
+		    point( 100.0, 100.0 ) );
     }
 
     if( world == "birds::fred_2003" ) {
