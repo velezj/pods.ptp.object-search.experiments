@@ -37,6 +37,7 @@ pods_use_pkg_config_packages( p2l-rawseeds-experiments
   p2l-ruler-point-process
   p2l-planner-core
   p2l-point-process-experiment-core
+  ptp.object-search.point-process-entropy-planners
 )
 pods_install_headers(
   src/models.hpp
@@ -50,7 +51,7 @@ pods_install_libraries( p2l-rawseeds-experiments )
 pods_install_pkg_config_file(p2l-rawseeds-experiments
     CFLAGS
     LIBS -lp2l-rawseeds-experiments
-    REQUIRES boost-1.54.0 p2l-common p2l-math-core lcmtypes_p2l-math-core p2l-point-process-core p2l-probability-core lcmtypes_p2l-probability-core p2l-igmm-point-process lcmtypes_p2l-igmm-point-process p2l-ruler-point-process p2l-planner-core p2l-point-process-experiment-core
+    REQUIRES boost-1.54.0 p2l-common p2l-math-core lcmtypes_p2l-math-core p2l-point-process-core p2l-probability-core lcmtypes_p2l-probability-core p2l-igmm-point-process lcmtypes_p2l-igmm-point-process p2l-ruler-point-process p2l-planner-core ptp.object-search.point-process-entropy-planners p2l-point-process-experiment-core
     VERSION 0.0.1)
 
 

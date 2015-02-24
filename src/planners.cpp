@@ -2,10 +2,11 @@
 #include "planners.hpp"
 #include <planner-core/shortest_path_next_planner.hpp>
 #include <planner-core/coverage_planner.hpp>
-#include <planner-core/one_action_entropy_reduction_planner.hpp>
+#include <point-process-entropy-planners/one_action_entropy_reduction_planner.hpp>
 #include <planner-core/random_planner.hpp>
 
 using namespace planner_core;
+using namespace point_process_entropy_planners;
 
 namespace rawseeds_experiments { namespace planners {
 
