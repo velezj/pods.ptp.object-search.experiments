@@ -87,8 +87,8 @@ int main( int argn, char** argv )
   try {
 
     // get the result form couchdb
-    couchdb::Couchdb couch( boost::network::uri::uri(po_vm["results-database-url"].as<std::string>()) );
-    ptree result = couch.fetch( boost::network::uri::uri( po_vm["result"].as<std::string>() ) );
+    couchdb::Couchdb couch( po_vm["results-database-url"].as<std::string>() );
+    ptree result = couch.fetch( po_vm["result"].as<std::string>() );
       
     // load the world points
     std::string world_id = result.get<std::string>( "result.parameters.world.id" );

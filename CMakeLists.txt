@@ -58,6 +58,7 @@ add_executable( p2l-rawseeds-experiments-runner
 pods_use_pkg_config_packages( p2l-rawseeds-experiments-runner
   p2l-rawseeds-experiments
   git-version-script
+  boost-1.54.0-program-options
 )
 pods_install_executables( p2l-rawseeds-experiments-runner )
 
@@ -67,6 +68,7 @@ add_executable( p2l-rawseeds-experiments-console
 )
 pods_use_pkg_config_packages( p2l-rawseeds-experiments-console
   p2l-rawseeds-experiments
+  boost-1.54.0-program-options
 )
 pods_install_executables( p2l-rawseeds-experiments-console )
 
@@ -76,6 +78,7 @@ add_executable( p2l-rawseeds-experiments-info
 )
 pods_use_pkg_config_packages( p2l-rawseeds-experiments-info
   p2l-rawseeds-experiments
+  boost-1.54.0-program-options
 )
 pods_install_executables( p2l-rawseeds-experiments-info )
 

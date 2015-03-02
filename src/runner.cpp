@@ -140,7 +140,7 @@ int main( int argn, char** argv )
   try {
 
     // store results in couchdb
-    couchdb::Couchdb couch( boost::network::uri::uri(po_vm["results-database-url"].as<std::string>()) );
+    couchdb::Couchdb couch( po_vm["results-database-url"].as<std::string>() );
     
     // create a document for the result
     ptree result;
