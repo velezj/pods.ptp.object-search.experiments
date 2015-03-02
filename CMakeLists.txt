@@ -15,7 +15,8 @@ if( USE_PEDANTIC )
     add_definitions( -pedantic )
 endif (USE_PEDANTIC)
 
-
+add_definitions( -DINSTALL_DIR="${CMAKE_INSTALL_PREFIX}" )
+install( DIRECTORY data DESTINATION . )
 
 add_library( p2l-rawseeds-experiments SHARED
   src/planners.cpp

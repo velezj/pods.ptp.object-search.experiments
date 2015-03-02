@@ -21,7 +21,7 @@ namespace rawseeds_experiments {
   biccoca_27a_random( const double& f ) {
 
     // ok, look up the centroid file SSV and parse it
-    std::ifstream fin( "/home/velezj/projects/gits/p2l-system/build/bin/data/bicocca-2009-02-27a/labeled-signs-1-centroids.ssv" );
+    std::ifstream fin( INSTALL_DIR "/data/bicocca-2009-02-27a/labeled-signs-1-centroids.ssv" );
     std::vector<nd_point_t> points = parse_points_from_ssv_stream( fin );
     fin.close();
     
@@ -40,7 +40,7 @@ namespace rawseeds_experiments {
   std::vector<nd_point_t>
   fred_2003_random( const double& f ) {
     // ok, look up the centroid file SSV and parse it
-    std::ifstream fin( "/home/velezj/projects/gits/p2l-system/build/bin/data/birds/fred_2003.ssv" );
+    std::ifstream fin( INSTALL_DIR "/data/birds/fred_2003.ssv" );
     std::vector<nd_point_t> points = parse_points_from_ssv_stream( fin, false );
     fin.close();
 
@@ -67,7 +67,7 @@ namespace rawseeds_experiments {
   std::vector<nd_point_t>
   fred_2003_species_random( const std::string& species, const double& f ) {
     // ok, look up the centroid file SSV and parse it
-    std::ifstream fin( "/home/velezj/projects/gits/p2l-system/build/bin/data/birds/fred_2003_" + species + ".ssv" );
+    std::ifstream fin( INSTALL_DIR "/data/birds/fred_2003_" + species + ".ssv" );
     std::vector<nd_point_t> points = parse_points_from_ssv_stream( fin, false );
     fin.close();
 
@@ -99,7 +99,7 @@ namespace rawseeds_experiments {
     if( world == "biccoca_2009_02_27a" ) {
     
       // ok, look up the centroid file SSV and parse it
-      std::ifstream fin( "/home/velezj/projects/gits/p2l-system/build/bin/data/bicocca-2009-02-27a/labeled-signs-1-centroids.ssv" );
+      std::ifstream fin( INSTALL_DIR "/data/bicocca-2009-02-27a/labeled-signs-1-centroids.ssv" );
       points = parse_points_from_ssv_stream( fin );
       fin.close();
       return points;
@@ -121,7 +121,7 @@ namespace rawseeds_experiments {
     
     if( world == "random-subset-0.5::biccoca_2009_02_27a" ) {
       // ok, look up the centroid file SSV and parse it
-      std::ifstream fin( "/home/velezj/projects/gits/p2l-system/build/bin/data/bicocca-2009-02-27a/labeled-signs-1-centroids.ssv" );
+      std::ifstream fin( INSTALL_DIR "/data/bicocca-2009-02-27a/labeled-signs-1-centroids.ssv" );
       points = parse_points_from_ssv_stream( fin );
       fin.close();
       // randomly shulfffe points and pick first half
@@ -135,7 +135,7 @@ namespace rawseeds_experiments {
 
     if( world == "random-subset-0.3::biccoca_2009_02_27a" ) {
       // ok, look up the centroid file SSV and parse it
-      std::ifstream fin( "/home/velezj/projects/gits/p2l-system/build/bin/data/bicocca-2009-02-27a/labeled-signs-1-centroids.ssv" );
+      std::ifstream fin( INSTALL_DIR "/data/bicocca-2009-02-27a/labeled-signs-1-centroids.ssv" );
       points = parse_points_from_ssv_stream( fin );
       fin.close();
       // randomly shulfffe points and pick first half
@@ -151,7 +151,7 @@ namespace rawseeds_experiments {
 
     if( world == "random-subset-0.1::biccoca_2009_02_27a" ) {
       // ok, look up the centroid file SSV and parse it
-      std::ifstream fin( "/home/velezj/projects/gits/p2l-system/build/bin/data/bicocca-2009-02-27a/labeled-signs-1-centroids.ssv" );
+      std::ifstream fin( INSTALL_DIR "/data/bicocca-2009-02-27a/labeled-signs-1-centroids.ssv" );
       points = parse_points_from_ssv_stream( fin );
       fin.close();
 
@@ -219,7 +219,10 @@ namespace rawseeds_experiments {
     if( world == "birds::fred_2003" ) {
       // TODO: precompute this and return it here
       // ok, look up the centroid file SSV and parse it
-      std::ifstream fin( "/home/velezj/projects/gits/p2l-system/build/bin/data/birds/fred_2003.ssv" );
+      std::string filename = INSTALL_DIR "/data/birds/fred_2003.ssv";
+      std::cout << "fn: " << filename << std::endl;
+      std::cout.flush();
+      std::ifstream fin( filename.c_str() );
       std::vector<nd_point_t> points = parse_points_from_ssv_stream( fin, false );
       fin.close();
       

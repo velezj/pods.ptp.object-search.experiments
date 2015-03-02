@@ -70,6 +70,7 @@ int main( int argn, char** argv )
   // show usage if wanted
   if( po_vm.count( "help" )) {
     std::cout << po_desc << std::endl;
+    std::cout << "INSTALL_DIR= " << INSTALL_DIR << std::endl;
     std::cout << "Worlds: " << std::endl;
     for( auto item : point_process_experiment_core::get_registered_worlds() ) {
       std::cout << "    " << item 
