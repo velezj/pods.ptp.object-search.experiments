@@ -1,5 +1,5 @@
 
-#include <p2l-rawseeds-experiments/register.hpp>
+#include <object-search.rawseeds-experiments/register.hpp>
 #include <point-process-experiment-core/experiment_utils.hpp>
 #include <point-process-experiment-core/experiment_runner.hpp>
 #include <math-core/io.hpp>
@@ -149,7 +149,7 @@ int main( int argn, char** argv )
     // add the code git version
     result.put_child
       ( "code.version", 
-	git_version::git_version( "/home/velezj/projects/gits/p2l-system/" ) );
+	git_version::git_version( "/home/velezj/projects/gits/object-search.system/" ) );
     
     // add the parameters for the experiment
     result.put( "result.parameters.model.id", model );
